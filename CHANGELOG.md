@@ -2,26 +2,18 @@
 
 All notable changes to this project are documented in this file.
 
-## [Unreleased]
+## [1.3.0]
 
-### Added
-- Added contributor-validated Razer Naga Pro support over USB (wired `0x008F` and 2.4 GHz receiver `0x0090`) and Bluetooth (`0x0092`), including DPI stages, two-zone static lighting/brightness, mapped onboard profiles, and grouped remapping for the known-safe buttons on all three side panels. Native default restore remains unavailable for side-panel slots whose factory blocks are unknown, and undecoded class-`0x03` slots remain read-only.
-- Added the first non-mouse device profiles: Razer Huntsman Mini (`0x0257`, keyboard) and Razer Tartarus Pro (`0x0244`, keypad), with contributor-validated backlight lighting effects and brightness controls over USB. Initial connection and reconnect accept their lighting-only telemetry, and saved-settings restore and backend applies omit unsupported mouse controls. The Tartarus Pro keeps OpenRazer's LED `0x00` brightness addressing (validated to alias LED `0x05`), and OpenSnek never switches it into driver mode.
-- Added contributor-validated USB profiles for the Razer Basilisk (2017, `0x0064`) and Razer Lancehead Tournament Edition (`0x0060`): DPI (scalar, independent X/Y, and live 5-stage tables), poll rate, and multi-zone extended-matrix lighting. Contributor hardware validation covers DPI, poll-rate reads, and lighting write/readback/restore probes. Button remap and onboard profiles are not mapped yet and stay hidden; saved-settings restore skips unsupported power controls on these wired mice.
-- Added per-profile USB control capability flags (`supportsDPIControls`, `supportsPollRateControls`, `supportsPowerManagementControls`, `supportsButtonRemapControls`), a `DeviceFormFactor` (mouse/keyboard/keypad), and a per-profile brightness LED override so future non-mouse device profiles do not inherit mouse capabilities.
-
-### Changed
-- Local app builds now fall back to SwiftPM on Command Line Tools-only Macs, while retaining the canonical Xcode target when full Xcode is available; local build and pre-push SwiftPM commands also skip irrelevant macOS Keychain credential lookup for public dependencies.
-- USB state reads and reachability checks now tolerate devices without DPI hardware by falling back to serial/firmware reads, and skip DPI, poll-rate, power-management, and onboard-profile commands on profiles that do not support them. Fast DPI polling and local-profile DPI adaptation also honor `supportsDPIControls`.
+### Highlights
+- Added contributor-validated Razer Naga Pro support over wired USB, its 2.4 GHz receiver, and Bluetooth, including DPI stages, two-zone lighting and brightness, mapped onboard profiles, and remapping for known-safe buttons across all three side panels. Unmapped buttons remain read-only, and native default restore is unavailable where factory bindings are unknown.
+- Added the first keyboard and keypad profiles: contributor-validated USB lighting effects and brightness for the Razer Huntsman Mini and Tartarus Pro. Their connection, reconnect, and saved-settings flows support lighting without exposing unsupported mouse controls.
+- Added contributor-validated USB support for the Razer Basilisk (2017) and Lancehead Tournament Edition, including DPI stages, independent X/Y DPI, poll rate, and multi-zone lighting. Button remapping and onboard profiles remain unavailable on these models, and saved-settings restore omits unsupported power controls.
 
 ### Fixed
-- Fixed Razer devices without the standard 90-byte USB control interface (e.g. the Kraken Kitty V2 headset, which macOS exposes only through a consumer-control HID endpoint) being shown as a disconnected mouse with an endless "USB dongle is connected, but the mouse is not responding" reconnect loop. Such devices are now classified as Unsupported with an explanation, and repeated telemetry reads stop until discovery or reconnect resets the classification. The receiver message also now says "device" instead of "mouse".
-- Fixed unsigned SwiftPM app bundles retaining an invalidated executable signature after their framework rpath was added.
-- Fixed onboard profile names remaining stuck on synthesized `Profile N` labels after profile switches; assigned profile names now load when the profile picker refreshes.
-- Stopped metadata fallbacks from creating repeated local profile entries without treating legitimate user-named `Profile N` profiles as disposable placeholders.
-- Hardened HID discovery around Input Monitoring changes and protected interfaces: cached managers now reopen when authorization changes, empty snapshots retain rate-limited reconnect recovery, permission errors use the resolved authorization state, and Bluetooth HID probing continues best-effort after a manager-level refusal.
-- Fixed the OpenSnekProbe USB path to continue best-effort device discovery when the manager-level `IOHIDManagerOpen` fails (matching the app's behavior), since per-device opens can still succeed.
-- Fixed HID access reporting when macOS refuses the bulk `IOHIDManagerOpen` on protected keyboard interfaces even though Input Monitoring is granted: the app previously misreported that as a permission denial while recreating the HID manager and logging errors every discovery cycle. The bridge now checks `IOHIDCheckAccess`, keeps the manager, reports access as granted, and logs the refusal once.
+- Devices without a compatible USB control interface, including the Kraken Kitty V2, now show an Unsupported explanation instead of repeatedly attempting mouse reconnection. Kraken lighting control remains unsupported on macOS.
+- Fixed onboard profile names getting stuck on generated `Profile N` labels after switching profiles, and stopped metadata fallbacks from creating duplicate local profiles.
+- Improved device discovery and recovery after Input Monitoring permission changes. Protected HID interfaces no longer cause false permission errors or repeated discovery failures when individual devices remain accessible; the USB probe also continues best-effort discovery.
+- Fixed invalid executable signatures that could prevent locally built SwiftPM app bundles from launching.
 
 ## [1.2.3]
 
