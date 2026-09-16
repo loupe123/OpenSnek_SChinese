@@ -85,7 +85,12 @@ final class AppStateRestoreTests: XCTestCase {
         await backend.releaseFirstApply()
 
         let preferenceStore = DevicePreferenceStore()
-        try await waitForRefactorCondition { await backend.applyCount() == 1 && preferenceStore.loadPersistedDeviceSettingsSnapshot(device: device) != nil }
+        // The backend counts an apply before the main actor finishes persisting it.
+        // Wait for completion so assertions cannot read the intermediate editor snapshot.
+        try await waitForRefactorCondition {
+            guard await backend.applyCount() == 1 else { return false }
+            return await MainActor.run { !appState.deviceStore.isApplying && preferenceStore.loadPersistedDeviceSettingsSnapshot(device: device) != nil }
+        }
 
         let patches = await backend.recordedPatches()
         let patch = try XCTUnwrap(patches.first)
