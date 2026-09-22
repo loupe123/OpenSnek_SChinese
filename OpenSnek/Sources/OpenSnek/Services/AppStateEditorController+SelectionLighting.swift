@@ -358,7 +358,7 @@ import OpenSnekCore
             let clamped = max(1, min(editorStore.visibleOnboardProfileCount, profile))
             var bindings = cachedButtonBindings(device: selectedDevice, profile: clamped)
             if !hasKnownButtonBindingsSnapshot(device: selectedDevice, profile: clamped) {
-                guard let fromDevice = await loadUSBButtonBindingsFromDevice(device: selectedDevice, profile: clamped) else {
+                guard let fromDevice = try? await loadUSBButtonBindingsFromDevice(device: selectedDevice, profile: clamped) else {
                     deviceStore.errorMessage = "Could not read button profile \(clamped) from the mouse."
                     return
                 }
@@ -394,7 +394,7 @@ import OpenSnekCore
         guard buttonProfileSource(for: device) == .mouseSlot(profile) else { return }
         let workspaceEditRevisionAtStart = buttonWorkspaceEditRevision
         AppLog.debug("AppState", "usb button slot selection hydration start id=\(device.id) profile=\(profile)")
-        guard let fromDevice = await loadUSBButtonBindingsFromDevice(device: device, profile: profile) else { return }
+        guard let fromDevice = try? await loadUSBButtonBindingsFromDevice(device: device, profile: profile) else { return }
         guard !Task.isCancelled else { return }
         guard deviceStore.selectedDevice?.id == device.id, buttonProfileSource(for: device) == .mouseSlot(profile), buttonWorkspaceEditRevision == workspaceEditRevisionAtStart else { return }
 

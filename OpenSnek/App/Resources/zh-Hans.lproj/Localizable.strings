@@ -238,6 +238,15 @@
 "Pulse Single" = "单色脉冲";
 "Pulse Dual" = "双色脉冲";
 
+/* ===== 分页导航 ===== */
+"Performance" = "性能";
+"Settings" = "设置";
+"Section" = "分区";
+
+/* ===== 按键映射页 ===== */
+"Click a button on the mouse to edit it." = "点击鼠标示意图上的按键即可编辑。";
+"Selected button" = "已选按键";
+
 /* ===== 按键映射 ===== */
 "Buttons" = "按键";
 "Button" = "按键";

@@ -87,7 +87,15 @@ import OpenSnekCore
         guard !isTearingDown else { return }
         let workspaceEditRevisionAtStart = buttonWorkspaceEditRevision
 
-        guard let fromDevice = await loadUSBButtonBindingsFromDevice(device: device, profile: profile) else {
+        let fromDevice: [Int: ButtonBindingDraft]
+        do {
+            guard let readback = try await loadUSBButtonBindingsFromDevice(device: device, profile: profile) else {
+                let cached = buttonBindingsCacheByHydrationKey[hydrationKey] ?? [:]
+                AppLog.debug("AppState", "usb button hydration has no readable bindings id=\(device.id) profile=\(profile) cachedSlots=\(cached.keys.sorted())")
+                return
+            }
+            fromDevice = readback
+        } catch {
             let cached = buttonBindingsCacheByHydrationKey[hydrationKey] ?? [:]
             registerButtonBindingsReadbackFailure(hydrationKey: hydrationKey, device: device, profile: profile, cachedSlots: cached.keys.sorted())
             return
@@ -161,11 +169,18 @@ import OpenSnekCore
         }
     }
 
-    func loadUSBButtonBindingsFromDevice(device: MouseDevice, profile: Int) async -> [Int: ButtonBindingDraft]? {
+    /// Raised when a button-binding readback could not complete because the transport failed.
+    ///
+    /// Kept distinct from "the device answered with no readable block" so only genuine failures are
+    /// retried; a device that simply has no readable bindings must stay parked.
+    struct ButtonBindingsReadbackError: Error {}
+
+    func loadUSBButtonBindingsFromDevice(device: MouseDevice, profile: Int) async throws -> [Int: ButtonBindingDraft]? {
         guard !isTearingDown, !Task.isCancelled else { return nil }
         let slots = (device.button_layout?.visibleSlots ?? buttonSlots).map(\.slot).filter { $0 != 6 }
         var bindings: [Int: ButtonBindingDraft] = [:]
         var readAnyBlock = false
+        var didEncounterReadError = false
         let persistentProfile = max(1, min(editorStore.visibleOnboardProfileCount, profile))
         let shouldReadDirect = !editorStore.supportsMultipleOnboardProfiles || persistentProfile == liveUSBButtonProfile(for: device)
         let hypershift = Int(editorStore.editableButtonLayer.usbHypershiftFlag)
@@ -182,10 +197,18 @@ import OpenSnekCore
                     readAnyBlock = true
                     if let draft = ButtonBindingSupport.buttonBindingDraftFromUSBFunctionBlock(slot: slot, functionBlock: block, profileID: device.profile_id) { bindings[slot] = draft }
                 }
-            } catch { AppLog.debug("AppState", "usb button hydration read failed id=\(device.id) slot=\(slot): \(error.localizedDescription)") }
+            } catch {
+                didEncounterReadError = true
+                AppLog.debug("AppState", "usb button hydration read failed id=\(device.id) slot=\(slot): \(error.localizedDescription)")
+            }
         }
 
-        guard readAnyBlock else { return nil }
+        // A device that answered every slot with "no block" simply exposes no readable bindings, so the
+        // one-shot attempt marker stays parked. Only a transport-level failure is worth retrying.
+        guard readAnyBlock else {
+            guard !didEncounterReadError else { throw ButtonBindingsReadbackError() }
+            return nil
+        }
         return bindings
     }
 

@@ -9,6 +9,7 @@ struct DeviceDetailView: View {
     let editorStore: EditorStore
     let selected: MouseDevice
     let state: MouseState
+    @State private var activePage: DetailPage = .buttons
     private let cardSpacing: CGFloat = 14
     private let detailTwoColumnMinWidth: CGFloat = 360
     private let twoColumnBreakpointPadding: CGFloat = 100
@@ -32,20 +33,27 @@ struct DeviceDetailView: View {
     private func detailContent(width: CGFloat) -> some View {
         VStack(alignment: .leading, spacing: 18) {
             DeviceOverviewBar(deviceStore: deviceStore, editorStore: editorStore, selected: selected, state: state)
-            detailColumns
+            pagePicker
+            pageContent
             DiagnosticsFooter(deviceStore: deviceStore, device: selected, state: state)
-        }.frame(width: width, alignment: .leading).padding(.horizontal, horizontalPadding).padding(.vertical, verticalPadding).frame(maxWidth: .infinity, alignment: .top)
+        }.frame(width: width, alignment: .leading).padding(.horizontal, horizontalPadding).padding(.vertical, verticalPadding).frame(maxWidth: .infinity, alignment: .top).onChange(of: availablePages) { _, pages in if !pages.contains(activePage) { activePage = pages.first ?? .buttons } }
     }
 
+    /// Splits the detail area into pages so button mapping and performance no longer share one long scroll.
+    private var pagePicker: some View { Picker("Section", selection: $activePage) { ForEach(availablePages) { page in Text(page.label).tag(page) } }.labelsHidden().pickerStyle(.segmented).accessibilityIdentifier("detail-page-picker") }
+
+    @ViewBuilder private var pageContent: some View { if activePage == .buttons, sections(for: .buttons).contains(.buttonRemap) { ButtonMappingPage(deviceStore: deviceStore, editorStore: editorStore) } else { detailColumns } }
+
     private var detailColumns: some View {
-        DetailColumnsLayout(minTwoColumnCardWidth: detailTwoColumnMinWidth, twoColumnBreakpointPadding: twoColumnBreakpointPadding, spacing: cardSpacing, maxCardWidth: detailCardMaxWidth) { ForEach(detailSections, id: \.self) { section in detailCardWithLayout(for: section) } }
+        DetailColumnsLayout(minTwoColumnCardWidth: detailTwoColumnMinWidth, twoColumnBreakpointPadding: twoColumnBreakpointPadding, spacing: cardSpacing, maxCardWidth: detailCardMaxWidth) { ForEach(sections(for: activePage), id: \.self) { section in detailCardWithLayout(for: section) } }
     }
 
     private func detailCardWithLayout(for section: DetailSection) -> some View {
         detailCard(for: section).layoutValue(key: PreferredDetailColumnLayoutKey.self, value: preferredColumn(for: section)).layoutValue(key: DetailCardMaxWidthLayoutKey.self, value: section == .buttonRemap ? detailContentMaxWidth : detailCardMaxWidth)
     }
 
-    private var detailSections: [DetailSection] {
+    /// Sections the device actually exposes, independent of the active page.
+    private var availableSections: [DetailSection] {
         var sections: [DetailSection] = []
         if state.capabilities.dpi_stages { sections.append(.dpiStages) }
         if editorStore.showsConnectBehaviorCard { sections.append(.onConnect) }
@@ -56,6 +64,18 @@ struct DeviceDetailView: View {
         if selected.transport != .bluetooth, state.scroll_mode != nil || state.scroll_acceleration != nil || state.scroll_smart_reel != nil { sections.append(.scrollControls) }
         if state.capabilities.button_remap { sections.append(.buttonRemap) }
         return sections
+    }
+
+    private var availablePages: [DetailPage] { DetailPage.allCases.filter { !sections(for: $0).isEmpty } }
+
+    private func sections(for page: DetailPage) -> [DetailSection] {
+        let available = availableSections
+        switch page {
+        case .buttons: return available.filter { $0 == .buttonRemap }
+        case .performance: return available.filter { $0 == .dpiStages || $0 == .pollRate }
+        case .lighting: return available.filter { $0 == .lighting }
+        case .settings: return available.filter { $0 == .onConnect || $0 == .powerManagement || $0 == .lowBatteryThreshold || $0 == .scrollControls }
+        }
     }
 
     @ViewBuilder private func detailCard(for section: DetailSection) -> some View {
@@ -77,6 +97,25 @@ struct DeviceDetailView: View {
         switch section {
         case .lighting, .buttonRemap: return 1
         default: return 0
+        }
+    }
+}
+
+/// Top-level pages inside the device detail area, so mapping and tuning no longer share one long scroll.
+private enum DetailPage: String, CaseIterable, Identifiable {
+    case buttons
+    case performance
+    case lighting
+    case settings
+
+    var id: String { rawValue }
+
+    var label: String {
+        switch self {
+        case .buttons: return localized("Buttons")
+        case .performance: return localized("Performance")
+        case .lighting: return localized("Lighting")
+        case .settings: return localized("Settings")
         }
     }
 }

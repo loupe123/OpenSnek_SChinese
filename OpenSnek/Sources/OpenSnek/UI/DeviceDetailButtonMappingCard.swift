@@ -11,18 +11,7 @@ struct ButtonMappingTableCard: View {
 
     private var isBusy: Bool { editorStore.isButtonProfileOperationInFlight || editorStore.isOnboardProfileLoadInFlight }
 
-    private var rows: [ButtonBindingRowModel] {
-        _ = editorStore.usbButtonProfilesRevision
-        return deviceStore.visibleButtonSlots.map { slot in
-            let kind = editorStore.buttonBindingKind(for: slot.slot)
-            let turboEnabled = editorStore.buttonBindingTurboEnabled(for: slot.slot)
-            let turboRate = editorStore.buttonBindingTurboRatePressesPerSecond(for: slot.slot)
-            return ButtonBindingRowModel(
-                slot: slot.slot, friendlyName: slot.friendlyName, group: slot.group, isEditable: deviceStore.isButtonSlotEditable(slot.slot) && !isBusy, selectedKind: kind, turboEligible: kind != .default && kind.supportsTurbo, clutchDPI: editorStore.buttonBindingClutchDPI(for: slot.slot),
-                keyboardHidKey: editorStore.buttonBindingHidKey(for: slot.slot), keyboardHidModifiers: editorStore.buttonBindingHidModifiers(for: slot.slot), supportsKeyboardModifierChords: deviceStore.selectedDevice.map { device in device.transport.supportsHIDBackedControls } ?? false,
-                turboEnabled: turboEnabled, turboRatePressesPerSecond: turboRate, notice: deviceStore.buttonSlotNotice(slot.slot))
-        }
-    }
+    private var rows: [ButtonBindingRowModel] { buttonBindingRowModels(deviceStore: deviceStore, editorStore: editorStore, isBusy: isBusy) }
 
     /// Rows preceded by the group name whose section they start, or `nil` when ungrouped or continuing the prior row's group.
     private var rowsWithGroupHeaders: [(header: String?, row: ButtonBindingRowModel)] {
@@ -52,8 +41,22 @@ struct ButtonMappingTableCard: View {
     }
 }
 
+/// Builds the button binding row models shared by the mapping card and the mapping page.
+@MainActor func buttonBindingRowModels(deviceStore: DeviceStore, editorStore: EditorStore, isBusy: Bool) -> [ButtonBindingRowModel] {
+    _ = editorStore.usbButtonProfilesRevision
+    return deviceStore.visibleButtonSlots.map { slot in
+        let kind = editorStore.buttonBindingKind(for: slot.slot)
+        let turboEnabled = editorStore.buttonBindingTurboEnabled(for: slot.slot)
+        let turboRate = editorStore.buttonBindingTurboRatePressesPerSecond(for: slot.slot)
+        return ButtonBindingRowModel(
+            slot: slot.slot, friendlyName: slot.friendlyName, group: slot.group, isEditable: deviceStore.isButtonSlotEditable(slot.slot) && !isBusy, selectedKind: kind, turboEligible: kind != .default && kind.supportsTurbo, clutchDPI: editorStore.buttonBindingClutchDPI(for: slot.slot),
+            keyboardHidKey: editorStore.buttonBindingHidKey(for: slot.slot), keyboardHidModifiers: editorStore.buttonBindingHidModifiers(for: slot.slot), supportsKeyboardModifierChords: deviceStore.selectedDevice.map { device in device.transport.supportsHIDBackedControls } ?? false,
+            turboEnabled: turboEnabled, turboRatePressesPerSecond: turboRate, notice: deviceStore.buttonSlotNotice(slot.slot))
+    }
+}
+
 /// Renders the button-layer picker that switches the workspace between the normal and Hypershift layers.
-private struct ButtonLayerPicker: View {
+struct ButtonLayerPicker: View {
     let editorStore: EditorStore
 
     private var layerBinding: Binding<ButtonBindingLayer> { Binding(get: { editorStore.editableButtonLayer }, set: { editorStore.editableButtonLayer = $0 }) }
@@ -518,7 +521,7 @@ struct LabeledControlRow<Control: View>: View {
 }
 
 /// Stores button binding row model data.
-private struct ButtonBindingRowModel: Identifiable, Equatable {
+struct ButtonBindingRowModel: Identifiable, Equatable {
     let slot: Int
     let friendlyName: String
     let group: String?
@@ -536,8 +539,17 @@ private struct ButtonBindingRowModel: Identifiable, Equatable {
     var id: Int { slot }
 }
 
+/// Presentation helpers layered on top of the row model.
+extension ButtonBindingRowModel {
+    /// Short human label for the action this button currently performs, used by the mouse map call-outs.
+    var actionLabel: String {
+        guard selectedKind == .keyboardSimple else { return selectedKind.label }
+        return AppStateKeyboardSupport.keyboardDisplayLabel(forHidKey: keyboardHidKey, hidModifiers: keyboardHidModifiers)
+    }
+}
+
 /// Renders the button binding row UI.
-private struct ButtonBindingRow: View {
+struct ButtonBindingRow: View {
     let editorStore: EditorStore
     let row: ButtonBindingRowModel
 
