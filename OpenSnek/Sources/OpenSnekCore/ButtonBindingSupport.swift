@@ -165,6 +165,11 @@ public enum ButtonBindingSupport {
                 return ButtonBindingDraft(kind: .dpiClutch, hidKey: 4, turboEnabled: false, turboRate: defaultTurboRate, clutchDPI: DeviceProfiles.clampDPI(dpi, profileID: profileID))
             }
             return nil
+        case 0x0A:
+            guard data.count >= 2 else { return nil }
+            let usage = (UInt16(data[0]) << 8) | UInt16(data[1])
+            guard let kind = buttonKindFromUSBMediaUsage(usage) else { return nil }
+            return ButtonBindingDraft(kind: kind, hidKey: 4, turboEnabled: false, turboRate: defaultTurboRate)
         case 0x01:
             guard let mouseButton = data.first, let kind = buttonKindFromUSBMouseButton(mouseButton) else { return nil }
             return ButtonBindingDraft(kind: kind, hidKey: 4, turboEnabled: false, turboRate: defaultTurboRate)
@@ -220,6 +225,37 @@ public enum ButtonBindingSupport {
         return clampTurboRate(Int(round(scaled)))
     }
 
+    /// HID Consumer Page usage ids (usage page `0x0C`) backing the media `ButtonBindingKind` cases.
+    ///
+    /// Wire encoding is `0a 02 <usageHi> <usageLo> 00 00 00`. The usages are standard HID consumer
+    /// values rather than Razer-specific ids, so the mapping is device independent. See
+    /// `docs/protocol/USB_PROTOCOL.md` for the validation that decoded this family.
+    public static func usbConsumerUsage(for kind: ButtonBindingKind) -> UInt16? {
+        switch kind {
+        case .mediaPlayPause: return 0x00CD
+        case .mediaNextTrack: return 0x00B5
+        case .mediaPreviousTrack: return 0x00B6
+        case .mediaStop: return 0x00B7
+        case .mediaMute: return 0x00E2
+        case .mediaVolumeUp: return 0x00E9
+        case .mediaVolumeDown: return 0x00EA
+        default: return nil
+        }
+    }
+
+    public static func buttonKindFromUSBMediaUsage(_ usage: UInt16) -> ButtonBindingKind? {
+        switch usage {
+        case 0x00CD: return .mediaPlayPause
+        case 0x00B5: return .mediaNextTrack
+        case 0x00B6: return .mediaPreviousTrack
+        case 0x00B7: return .mediaStop
+        case 0x00E2: return .mediaMute
+        case 0x00E9: return .mediaVolumeUp
+        case 0x00EA: return .mediaVolumeDown
+        default: return nil
+        }
+    }
+
     public static func buttonKindFromUSBMouseButton(_ value: UInt8) -> ButtonBindingKind? {
         switch value {
         case 0x01: return .leftClick
@@ -265,6 +301,9 @@ public enum ButtonBindingSupport {
         case .keyboardSimple:
             if turboEnabled { return [0x0D, 0x04, clampedModifiers, clampedKey, turboHi, turboLo, 0x00] }
             return [0x02, 0x02, clampedModifiers, clampedKey, 0x00, 0x00, 0x00]
+        case .mediaPlayPause, .mediaNextTrack, .mediaPreviousTrack, .mediaStop, .mediaMute, .mediaVolumeUp, .mediaVolumeDown:
+            guard let usage = usbConsumerUsage(for: kind) else { return [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00] }
+            return [0x0A, 0x02, UInt8((usage >> 8) & 0xFF), UInt8(usage & 0xFF), 0x00, 0x00, 0x00]
         default:
             if kind == .scrollLeft || kind == .scrollRight, let buttonID = horizontalScrollButtonID(for: kind, profileID: profileID), usesBasiliskV3FamilyHorizontalScrollBlock(profileID) || profileID == .nagaPro {
                 let defaultRate = profileID == .nagaPro ? defaultTurboRate : basiliskV3FamilyHorizontalScrollTurboRate
@@ -317,6 +356,12 @@ public enum ButtonBindingSupport {
         let data = Array(block[2..<(2 + length)])
         let dataHex = data.map { String(format: "%02x", $0) }.joined()
         if let clutchDPI = basiliskDPIClutchDPI(from: block, profileID: .basiliskV3Pro) { return "block=\(hex) class=0x\(String(format: "%02x", classID)) len=\(length) data=\(dataHex) dpi_clutch=\(clutchDPI)" }
+        if classID == 0x0A, data.count >= 2 {
+            let usage = (UInt16(data[0]) << 8) | UInt16(data[1])
+            let usageHex = String(format: "0x%04x", usage)
+            if let mediaKind = buttonKindFromUSBMediaUsage(usage) { return "block=\(hex) class=0x0a len=\(length) data=\(dataHex) media=\(mediaKind.rawValue) usage=\(usageHex)" }
+            return "block=\(hex) class=0x0a len=\(length) data=\(dataHex) usage=\(usageHex)"
+        }
         return "block=\(hex) class=0x\(String(format: "%02x", classID)) len=\(length) data=\(dataHex)"
     }
 

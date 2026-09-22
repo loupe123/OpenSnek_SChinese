@@ -249,6 +249,32 @@ Validated function block examples:
 - Basilisk V3 35K sensitivity-clutch default (`0x0F`): `06 01 05 01 90 01 90`
 - Basilisk V3 Pro / 35K profile-button default (`0x6A`): `12 01 01 00 00 00 00`
 - Basilisk V3 35K observed alternate DPI-button block (`0x60`): `04 02 0F 7B 00 00 00`
+- media / consumer control: `0a 02 <usageHi> <usageLo> 00 00 00`
+- Hypershift layer trigger (layer modifier): `0c 01 01 00 00 00 00`
+
+Newly decoded action families (validated on wired Basilisk V3 `0x0099`, 2026-09-22):
+
+- **Media / consumer control (`class 0x0A`)**:
+  - The two data bytes are a big-endian HID **Consumer Page** usage id (usage page `0x0C`).
+  - Decoded by matching a user's Synapse-assigned Hypershift layer against the wire values; all five assigned actions matched the consumer usage table with no exceptions:
+    | Slot | Data | Consumer usage | Action |
+    |---|---|---|---|
+    | `0x01` | `00 b6` | `0xB6` | Scan Previous Track |
+    | `0x02` | `00 b5` | `0xB5` | Scan Next Track |
+    | `0x04` | `00 cd` | `0xCD` | Play/Pause |
+    | `0x09` | `00 e9` | `0xE9` | Volume Increment |
+    | `0x0A` | `00 ea` | `0xEA` | Volume Decrement |
+  - Common consumer usages: `0xB0` Play, `0xB1` Pause, `0xB3` Fast Forward, `0xB4` Rewind, `0xB5` Scan Next Track, `0xB6` Scan Previous Track, `0xB7` Stop, `0xCD` Play/Pause, `0xE2` Mute, `0xE9` Volume Increment, `0xEA` Volume Decrement.
+- **Hypershift layer trigger (`class 0x0C`)**:
+  - Marks a button as the layer modifier that activates the Hypershift layer. The observed single data byte `0x01` is the layer it activates.
+  - Observed on `0x0099`: a forward button assigned as the Hypershift trigger in Synapse reads back `0c 01 01` on both the normal and the Hypershift layer, which matches the expectation that a layer modifier does not participate in its own layer.
+
+Hypershift-layer read/write validation on wired Basilisk V3 (`0x0099`), 2026-09-22:
+
+- `0x02:0x8C` and `0x02:0x0C` accept the same payload shape with argument `[2] = 0x01` for the Hypershift layer instead of `0x00` for the normal layer.
+- Layers are independently addressed: writing slot `0x01` readback verified the written block, and a follow-up normal-layer read still returned the original `01 01 01` block, so a Hypershift-layer write does not overwrite the normal layer.
+- Both `profile=1` (persistent slot) and `profile=0` (direct/live) accepted the same Hypershift-layer writes and read back identically.
+- The wired Basilisk V3 (`0x0099`) ships a populated Hypershift layer rather than empty slots, so treat "read succeeded" as normal and compare against the normal layer to detect what is actually assigned.
 
 Client note:
 - USB function blocks are not BLE `p0/p1/p2` payloads. Use `class,len,data[]` encoding directly.
@@ -561,7 +587,7 @@ These commands are documented but not yet implemented in this tool.
 (macro families, media/consumer, analog variants) is still incomplete per device/firmware.
 
 Open questions:
-- exact behavior of advanced function classes (`0x03..0x05`, `0x07`, `0x09`, `0x0A`, `0x0F`, `0x12`)
+- exact behavior of advanced function classes (`0x03..0x05`, `0x07`, `0x09`, `0x0F`; `0x0A` and `0x12` are now decoded above)
 - interoperability of legacy non-analog command `0x02:0x0D`
 - per-device slot map differences beyond the validated Basilisk V3 X set
 

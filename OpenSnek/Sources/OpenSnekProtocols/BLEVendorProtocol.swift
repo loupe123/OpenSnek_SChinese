@@ -445,6 +445,11 @@ public enum BLEVendorProtocol {
         case .mouseBack: return Data([0x01, slot, 0x00, 0x01, 0x01, 0x04, 0x00, 0x00, 0x00, 0x00])
         case .mouseForward: return Data([0x01, slot, 0x00, 0x01, 0x01, 0x05, 0x00, 0x00, 0x00, 0x00])
         case .keyboardSimple: return Data([0x01, slot, 0x00, 0x02, 0x02, hidModifiers, hidKey ?? 0x04, 0x00, 0x00, 0x00])
+        case .mediaPlayPause, .mediaNextTrack, .mediaPreviousTrack, .mediaStop, .mediaMute, .mediaVolumeUp, .mediaVolumeDown:
+            // BLE button payloads wrap the same 7-byte function block as USB, so the consumer-control
+            // family is encoded identically here. Hardware validation over BLE is still pending.
+            guard let usage = ButtonBindingSupport.usbConsumerUsage(for: kind) else { return Data([0x01, slot, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]) }
+            return buildRawFunctionBlockPayload(slot: slot, functionBlock: [0x0A, 0x02, UInt8((usage >> 8) & 0xFF), UInt8(usage & 0xFF), 0x00, 0x00, 0x00])
         case .clearLayer: return Data([0x01, slot, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00])
         }
     }

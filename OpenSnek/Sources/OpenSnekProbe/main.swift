@@ -47,6 +47,7 @@ struct ProbeUSBButtonSetRawArgs {
     let slot: Int
     let functionBlock: [UInt8]
     let profiles: [UInt8]
+    let hypershift: UInt8
     let productID: Int?
 }
 

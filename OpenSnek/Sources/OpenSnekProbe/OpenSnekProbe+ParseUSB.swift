@@ -35,7 +35,7 @@ extension OpenSnekProbe {
         let flags = parseFlags(args)
         guard let slotRaw = flags["--slot"], let slot = Int(slotRaw) else { throw ProbeError.usage("Missing --slot\n\(usageText)") }
         guard let kindRaw = flags["--kind"]?.lowercased() else { throw ProbeError.usage("Missing --kind\n\(usageText)") }
-        let validKinds: Set<String> = ["default", "dpi_cycle", "dpi_clutch", "left_click", "right_click", "middle_click", "scroll_up", "scroll_down", "mouse_back", "mouse_forward", "keyboard_simple", "clear_layer"]
+        let validKinds = Set(ButtonBindingKind.allCases.map(\.rawValue))
         guard validKinds.contains(kindRaw) else { throw ProbeError.usage("Invalid --kind '\(kindRaw)'\n\(usageText)") }
 
         let hidKey = max(0, min(255, Int(flags["--hid-key"] ?? "4") ?? 4))
@@ -53,7 +53,8 @@ extension OpenSnekProbe {
         let functionBlock = try parseHexBytes(hexRaw)
         guard functionBlock.count == 7 else { throw ProbeError.usage("--hex must decode to exactly 7 bytes") }
         let profiles = try parseUSBProfiles(flags["--profile"], defaultProfiles: [0x01, 0x00])
-        return ProbeUSBButtonSetRawArgs(slot: slot, functionBlock: functionBlock, profiles: profiles, productID: try parseOptionalUSBPID(args))
+        let hypershift = UInt8(max(0, min(1, Int(flags["--hypershift"] ?? "0") ?? 0)))
+        return ProbeUSBButtonSetRawArgs(slot: slot, functionBlock: functionBlock, profiles: profiles, hypershift: hypershift, productID: try parseOptionalUSBPID(args))
     }
 
     static func parseUSBInputListenArgs(_ args: [String]) throws -> ProbeUSBInputListenArgs {

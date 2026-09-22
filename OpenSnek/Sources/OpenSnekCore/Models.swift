@@ -529,6 +529,13 @@ public enum ButtonBindingKind: String, CaseIterable, Identifiable, Codable, Send
     case mouseBack = "mouse_back"
     case mouseForward = "mouse_forward"
     case keyboardSimple = "keyboard_simple"
+    case mediaPlayPause = "media_play_pause"
+    case mediaNextTrack = "media_next_track"
+    case mediaPreviousTrack = "media_previous_track"
+    case mediaStop = "media_stop"
+    case mediaMute = "media_mute"
+    case mediaVolumeUp = "media_volume_up"
+    case mediaVolumeDown = "media_volume_down"
     case clearLayer = "clear_layer"
 
     public var id: String { rawValue }
@@ -548,7 +555,22 @@ public enum ButtonBindingKind: String, CaseIterable, Identifiable, Codable, Send
         case .mouseBack: return localized("Mouse Back")
         case .mouseForward: return localized("Mouse Forward")
         case .keyboardSimple: return localized("Keyboard Key")
+        case .mediaPlayPause: return localized("Play/Pause")
+        case .mediaNextTrack: return localized("Next Track")
+        case .mediaPreviousTrack: return localized("Previous Track")
+        case .mediaStop: return localized("Stop")
+        case .mediaMute: return localized("Mute")
+        case .mediaVolumeUp: return localized("Volume Up")
+        case .mediaVolumeDown: return localized("Volume Down")
         case .clearLayer: return localized("Disabled")
+        }
+    }
+
+    /// The media actions share the HID Consumer Page encoding rather than a Razer-specific family.
+    public var isMediaControl: Bool {
+        switch self {
+        case .mediaPlayPause, .mediaNextTrack, .mediaPreviousTrack, .mediaStop, .mediaMute, .mediaVolumeUp, .mediaVolumeDown: return true
+        default: return false
         }
     }
 
@@ -556,6 +578,7 @@ public enum ButtonBindingKind: String, CaseIterable, Identifiable, Codable, Send
         switch self {
         case .leftClick, .rightClick, .middleClick, .scrollUp, .scrollDown, .scrollLeft, .scrollRight, .mouseBack, .mouseForward, .keyboardSimple: return true
         case .default, .dpiCycle, .dpiClutch, .clearLayer: return false
+        case .mediaPlayPause, .mediaNextTrack, .mediaPreviousTrack, .mediaStop, .mediaMute, .mediaVolumeUp, .mediaVolumeDown: return false
         }
     }
 }

@@ -372,9 +372,9 @@ extension OpenSnekProbe {
             print("usb \(usb.describe())")
             let slot = UInt8(max(0, min(255, parsed.slot)))
             var wroteAny = false
-            for profile in parsed.profiles where try usb.writeButtonFunction(profile: profile, slot: slot, hypershift: 0x00, functionBlock: parsed.functionBlock) { wroteAny = true }
+            for profile in parsed.profiles where try usb.writeButtonFunction(profile: profile, slot: slot, hypershift: parsed.hypershift, functionBlock: parsed.functionBlock) { wroteAny = true }
             guard wroteAny else { throw ProbeError.protocolError("USB raw button write did not return success") }
-            for profile in parsed.profiles { if let block = try usb.readButtonFunction(profile: profile, slot: slot, hypershift: 0x00) { print("readback profile=\(profile) slot=\(parsed.slot) \(describeUSBFunctionBlock(block))") } }
+            for profile in parsed.profiles { if let block = try usb.readButtonFunction(profile: profile, slot: slot, hypershift: parsed.hypershift) { print("readback profile=\(profile) slot=\(parsed.slot) hypershift=\(parsed.hypershift) \(describeUSBFunctionBlock(block))") } }
         case "usb-raw":
             let parsed = try parseUSBRawArgs(commandArgs)
             let usb = try USBProbeClient(productID: parsed.productID)
