@@ -496,7 +496,20 @@ import OpenSnekCore
         if kind == .dpiClutch { next.clutchDPI = next.clutchDPI ?? ButtonBindingSupport.defaultDPIClutchDPI(for: deviceStore.selectedDevice?.profile_id) }
         if !kind.supportsTurbo { next.turboEnabled = false }
         editorStore.editableButtonBindings[slot] = next
+        if kind == .hypershiftTrigger { demoteOtherHypershiftTriggers(keeping: slot) }
         handleButtonWorkspaceDidChange(slot: slot)
+    }
+
+    /// HyperShift has a single trigger per layer, so assigning a new one demotes the previous holder
+    /// back to its semantic default instead of leaving two buttons fighting over the layer.
+    private func demoteOtherHypershiftTriggers(keeping slot: Int) {
+        let demoted = editorStore.editableButtonBindings.compactMap { other, draft in other != slot && draft.kind == .hypershiftTrigger ? other : nil }
+        guard !demoted.isEmpty else { return }
+        for other in demoted {
+            editorStore.editableButtonBindings[other] = defaultButtonBinding(for: other)
+            handleButtonWorkspaceDidChange(slot: other)
+        }
+        AppLog.debug("AppState", "demoted previous HyperShift trigger slots=\(demoted.sorted()) after assigning slot=\(slot)")
     }
 
     func updateButtonBindingKeyboardShortcut(slot: Int, hidKey: Int, hidModifiers: Int) {

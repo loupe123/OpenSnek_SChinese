@@ -249,6 +249,7 @@
 
 /* ===== 动作分类（仿雷云） ===== */
 "HyperShift Trigger" = "HyperShift 触发键";
+"The HyperShift trigger cannot be remapped inside the HyperShift layer." = "该按键用于激活 HyperShift 层，因此在 Hypershift 层内不可修改。";
 "Mouse Buttons" = "鼠标按键";
 "Keyboard" = "键盘按键";
 "Media" = "多媒体键";

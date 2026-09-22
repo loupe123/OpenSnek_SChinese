@@ -24,6 +24,24 @@ OpenSnek is an open source native macOS app for configuring supported Razer mice
   <img src="docs/media/profiles.png" alt="open-snek onboard profiles screenshot" width="450">
 - Rebind all supported mouse buttons and write to onboard storage  
   <img src="docs/media/bindings.png" alt="open-snek app icon" width="300">
+- Official-style button mapping page: a vector top-down mouse map with leader-line call-outs, actions grouped the way Synapse groups them (mouse / keyboard / media / DPI / other), and full HyperShift layer support — including choosing which button acts as the HyperShift trigger
+- Detail area split into pages (Buttons / Performance / Lighting / Settings) instead of one long scroll
+
+## Simplified Chinese localization
+
+This repository is a fork of [gh123man/OpenSnek](https://github.com/gh123man/OpenSnek) that adds a Simplified Chinese (`zh-Hans`) localization. It follows the upstream architecture rather than patching strings ad hoc:
+
+- Every user-facing string is resolved through `Localizable.strings`, so the app picks the language from the system setting — no in-app language switch and no separate Chinese-only build.
+- Device names, status labels, diagnostics, error messages and the menu bar view are localized alongside the main window.
+- The localization is non-invasive: upstream English remains the development language, and `en` is still a supported localization.
+
+Build and run the Chinese build exactly like upstream:
+
+```bash
+git clone https://github.com/loupe123/OpenSnek_SChinese.git
+cd OpenSnek_SChinese/OpenSnek
+./scripts/build_macos_app.sh --configuration release
+```
 
 ## Supported Devices
 
@@ -72,9 +90,19 @@ More device support is welcome, whether that comes from new hardware captures or
 
 - Change DPI, stage count, and active stage
 - Adjusts supported lighting settings
-- Remaps supported buttons
+- Remaps supported buttons, with actions grouped by category (mouse buttons, keyboard, media, DPI, other)
+- Switch between the normal and HyperShift button layers, and choose which button acts as the HyperShift trigger
 - Works over USB and Bluetooth where the device protocol allows it
 - Avoids the need for Synapse or a separate Windows machine
+
+### Button mapping notes
+
+HyperShift behaves the way Synapse users expect:
+
+- **One trigger per layer.** Assigning a button as the HyperShift trigger automatically returns the previous trigger to its default action, so two buttons can never fight over the layer.
+- **The trigger is locked inside its own layer.** While you are editing the HyperShift layer the trigger button's dropdown is disabled, because that button is what activates the layer in the first place.
+
+The HyperShift trigger action was decoded from hardware rather than documented protocol: `OpenSnekProbe usb-profile-read --button-slots 5` on a Basilisk V3 (`1532:0099`) reports the trigger as function class `0x0C` (`0c 01 01 00 00 00 00`), while ordinary mouse buttons use class `0x01`.
 
 ## Download and Install
 

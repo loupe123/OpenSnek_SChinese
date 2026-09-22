@@ -48,10 +48,14 @@ struct ButtonMappingTableCard: View {
         let kind = editorStore.buttonBindingKind(for: slot.slot)
         let turboEnabled = editorStore.buttonBindingTurboEnabled(for: slot.slot)
         let turboRate = editorStore.buttonBindingTurboRatePressesPerSecond(for: slot.slot)
+        // The trigger button is what activates the HyperShift layer, so its action cannot be reassigned
+        // from inside that layer.
+        let isTriggerLocked = editorStore.editableButtonLayer == .hypershift && kind == .hypershiftTrigger
+        let notice = isTriggerLocked ? "The HyperShift trigger cannot be remapped inside the HyperShift layer." : deviceStore.buttonSlotNotice(slot.slot)
         return ButtonBindingRowModel(
-            slot: slot.slot, friendlyName: slot.friendlyName, group: slot.group, isEditable: deviceStore.isButtonSlotEditable(slot.slot) && !isBusy, selectedKind: kind, turboEligible: kind != .default && kind.supportsTurbo, clutchDPI: editorStore.buttonBindingClutchDPI(for: slot.slot),
-            keyboardHidKey: editorStore.buttonBindingHidKey(for: slot.slot), keyboardHidModifiers: editorStore.buttonBindingHidModifiers(for: slot.slot), supportsKeyboardModifierChords: deviceStore.selectedDevice.map { device in device.transport.supportsHIDBackedControls } ?? false,
-            turboEnabled: turboEnabled, turboRatePressesPerSecond: turboRate, notice: deviceStore.buttonSlotNotice(slot.slot))
+            slot: slot.slot, friendlyName: slot.friendlyName, group: slot.group, isEditable: deviceStore.isButtonSlotEditable(slot.slot) && !isBusy && !isTriggerLocked, selectedKind: kind, turboEligible: kind != .default && kind.supportsTurbo,
+            clutchDPI: editorStore.buttonBindingClutchDPI(for: slot.slot), keyboardHidKey: editorStore.buttonBindingHidKey(for: slot.slot), keyboardHidModifiers: editorStore.buttonBindingHidModifiers(for: slot.slot),
+            supportsKeyboardModifierChords: deviceStore.selectedDevice.map { device in device.transport.supportsHIDBackedControls } ?? false, turboEnabled: turboEnabled, turboRatePressesPerSecond: turboRate, notice: notice)
     }
 }
 
