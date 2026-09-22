@@ -18,11 +18,11 @@ enum DeviceConnectionState: Equatable {
 
     var indicator: DeviceStatusIndicator {
         switch self {
-        case .disconnected: DeviceStatusIndicator(label: "Disconnected", color: Color(hex: 0xFF453A))
-        case .reconnecting: DeviceStatusIndicator(label: "Reconnecting", color: Color(hex: 0xFFD60A))
-        case .connected: DeviceStatusIndicator(label: "Connected", color: Color(hex: 0x30D158))
-        case .unsupported: DeviceStatusIndicator(label: "Unsupported", color: Color(hex: 0xFFD60A))
-        case .error: DeviceStatusIndicator(label: "Error", color: Color(hex: 0xFF453A))
+        case .disconnected: DeviceStatusIndicator(label: localized("Disconnected"), color: Color(hex: 0xFF453A))
+        case .reconnecting: DeviceStatusIndicator(label: localized("Reconnecting"), color: Color(hex: 0xFFD60A))
+        case .connected: DeviceStatusIndicator(label: localized("Connected"), color: Color(hex: 0x30D158))
+        case .unsupported: DeviceStatusIndicator(label: localized("Unsupported"), color: Color(hex: 0xFFD60A))
+        case .error: DeviceStatusIndicator(label: localized("Error"), color: Color(hex: 0xFF453A))
         }
     }
 
@@ -30,11 +30,11 @@ enum DeviceConnectionState: Equatable {
 
     var diagnosticsLabel: String {
         switch self {
-        case .disconnected: "Disconnected"
-        case .reconnecting: "Reconnecting to live telemetry"
-        case .connected: "Live"
-        case .unsupported: "Unsupported"
-        case .error: "Error"
+        case .disconnected: localized("Disconnected")
+        case .reconnecting: localized("Reconnecting to live telemetry")
+        case .connected: localized("Live")
+        case .unsupported: localized("Unsupported")
+        case .error: localized("Error")
         }
     }
 }
@@ -50,12 +50,12 @@ enum DpiUpdateTransportStatus: String, Codable, Equatable, Sendable {
 
     var diagnosticsLabel: String {
         switch self {
-        case .unknown: "Checking"
-        case .listening: "Listening for first HID event"
-        case .streamActive: "HID stream active"
-        case .pollingFallback: "Polling fallback active"
-        case .realTimeHID: "Real-time HID active"
-        case .unsupported: "Unsupported"
+        case .unknown: localized("Checking")
+        case .listening: localized("Listening for first HID event")
+        case .streamActive: localized("HID stream active")
+        case .pollingFallback: localized("Polling fallback active")
+        case .realTimeHID: localized("Real-time HID active")
+        case .unsupported: localized("Unsupported")
         }
     }
 }

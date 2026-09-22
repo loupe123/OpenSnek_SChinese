@@ -12,8 +12,8 @@ struct OnConnectBehaviorCard: View {
 
     private var selectedDescription: String {
         switch editorStore.connectBehavior {
-        case .useMouseSettings: return "OpenSnek reads the current settings from the mouse when it connects and does not rewrite them automatically."
-        case .restoreOpenSnekSettings: return "OpenSnek reapplies the last profile you changed here when this mouse connects."
+        case .useMouseSettings: return localized("OpenSnek reads the current settings from the mouse when it connects and does not rewrite them automatically.")
+        case .restoreOpenSnekSettings: return localized("OpenSnek reapplies the last profile you changed here when this mouse connects.")
         }
     }
 
@@ -26,7 +26,7 @@ struct OnConnectBehaviorCard: View {
                 }.labelsHidden().pickerStyle(.segmented).accessibilityIdentifier("on-connect-picker")
 
                 HStack(alignment: .top, spacing: 10) {
-                    Text(selectedDescription).hintTextStyle().frame(maxWidth: .infinity, alignment: .leading)
+                    Text(LocalizedStringKey(selectedDescription)).hintTextStyle().frame(maxWidth: .infinity, alignment: .leading)
 
                     Button {
                         showsExpandedInfo.toggle()

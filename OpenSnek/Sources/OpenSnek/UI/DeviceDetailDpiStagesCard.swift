@@ -28,7 +28,7 @@ private struct DpiStageCountHeader: View {
 
     var body: some View {
         HStack {
-            Text("Enabled stages: \(editorStore.editableStageCount) / \(maximumEditableDpiStageCount)").font(.system(size: 13, weight: .bold, design: .rounded)).foregroundStyle(.white.opacity(0.82))
+            Text(localizedFormat("Enabled stages: %lld / %lld", editorStore.editableStageCount, maximumEditableDpiStageCount)).font(.system(size: 13, weight: .bold, design: .rounded)).foregroundStyle(.white.opacity(0.82))
             Spacer()
             HStack(spacing: 8) {
                 stageCountButton(systemName: "minus.circle.fill", isEnabled: editorStore.editableStageCount > 1, accessibilityIdentifier: "dpi-stage-count-decrease-button", action: decreaseStageCount)
@@ -118,7 +118,9 @@ private struct DpiStageRow: View {
         }
     }
 
-    @ViewBuilder private var splitSummary: some View { if supportsIndependentXYDPI && !isXYExpanded && stagePair.x != stagePair.y { Text("Current split: X \(stagePair.x) / Y \(stagePair.y)").font(.system(size: 11, weight: .medium, design: .monospaced)).foregroundStyle(.white.opacity(0.62)) } }
+    @ViewBuilder private var splitSummary: some View {
+        if supportsIndependentXYDPI && !isXYExpanded && stagePair.x != stagePair.y { Text(localizedFormat("Current split: X %lld / Y %lld", stagePair.x, stagePair.y)).font(.system(size: 11, weight: .medium, design: .monospaced)).foregroundStyle(.white.opacity(0.62)) }
+    }
 
     @ViewBuilder private var sliderControls: some View {
         if isXYExpanded {
@@ -269,7 +271,7 @@ private struct DpiSelectableStageHeaderLabel: View {
 
     private var label: some View { Label(title, systemImage: systemImage) }
 
-    private var title: String { "Stage \(stageNumber)" }
+    private var title: String { localizedFormat("Stage %lld", stageNumber) }
 
     private var backgroundShape: some View { Capsule().fill(backgroundColor) }
 

@@ -111,9 +111,9 @@ private struct SidebarFooterText: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
-            Text(title).font(.system(size: 11, weight: .black, design: .rounded)).foregroundStyle(.white)
+            Text(LocalizedStringKey(title)).font(.system(size: 11, weight: .black, design: .rounded)).foregroundStyle(.white)
 
-            Text(subtitle).font(.system(size: 10, weight: .semibold, design: .rounded)).foregroundStyle(.white.opacity(0.70))
+            Text(LocalizedStringKey(subtitle)).font(.system(size: 10, weight: .semibold, design: .rounded)).foregroundStyle(.white.opacity(0.70))
         }
     }
 }

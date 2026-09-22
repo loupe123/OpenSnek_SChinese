@@ -78,7 +78,10 @@ struct ContentView: View {
     }
 
     private var permissionGuidanceDetailLines: [String] {
-        ["Open Input Monitoring settings and turn on OpenSnek.", "If it still looks stuck, use Reset Permissions and try again.", "After changing the permission, quit and reopen OpenSnek.", "Current app host: \(runtimeStore.hidAccessStatus.hostLabel)"]
+        [
+            localized("Open Input Monitoring settings and turn on OpenSnek."), localized("If it still looks stuck, use Reset Permissions and try again."), localized("After changing the permission, quit and reopen OpenSnek."),
+            localizedFormat("Current app host: %@", runtimeStore.hidAccessStatus.hostLabel)
+        ]
     }
 
     private var activePermissionNoticeKey: String? {
@@ -224,9 +227,9 @@ struct ContentView: View {
         var items: [String] = []
         if let maxDPI = profile.passiveDPIInput?.maximumDPI { items.append("DPI \(maxDPI / 1000)K") } else { items.append("DPI") }
         if profile.supportsIndependentXYDPI { items.append("X/Y") }
-        if !profile.buttonLayout.writableSlots.isEmpty { items.append("Buttons") }
-        if !profile.supportedLightingEffects.isEmpty || !profile.usbLightingLEDIDs.isEmpty || !profile.usbLightingZones.isEmpty { items.append("Lighting") }
-        if profile.onboardProfileCount > 1 { items.append("\(profile.onboardProfileCount) profiles") }
+        if !profile.buttonLayout.writableSlots.isEmpty { items.append(localized("Buttons")) }
+        if !profile.supportedLightingEffects.isEmpty || !profile.usbLightingLEDIDs.isEmpty || !profile.usbLightingZones.isEmpty { items.append(localized("Lighting")) }
+        if profile.onboardProfileCount > 1 { items.append(localizedFormat("%lld profiles", profile.onboardProfileCount)) }
         return items.joined(separator: " · ")
     }
 
@@ -278,13 +281,13 @@ private struct EmptyDeviceStatePanel: View {
 
     private var connectHeader: some View { titleText("Connect a device") }
 
-    private func titleText(_ text: String) -> some View { Text(text).font(.system(size: 28, weight: .black, design: .rounded)).foregroundStyle(.white).multilineTextAlignment(.center).frame(maxWidth: .infinity, alignment: .center) }
+    private func titleText(_ text: String) -> some View { Text(LocalizedStringKey(text)).font(.system(size: 28, weight: .black, design: .rounded)).foregroundStyle(.white).multilineTextAlignment(.center).frame(maxWidth: .infinity, alignment: .center) }
 
     private var supportedDevicesLink: some View {
         VStack(spacing: 4) {
             Button(action: showSupportedDevices) { Text("Supported devices").font(.system(size: 13, weight: .bold, design: .rounded)).underline() }.buttonStyle(.plain).foregroundStyle(.white).help("Open supported device table")
 
-            Text("\(supportedFamilyCount) models · \(connectionPathCount) connection paths").font(.system(size: 13, weight: .semibold, design: .rounded)).foregroundStyle(.white.opacity(0.58)).multilineTextAlignment(.center).frame(maxWidth: .infinity, alignment: .center)
+            Text(localizedFormat("%lld models · %lld connection paths", supportedFamilyCount, connectionPathCount)).font(.system(size: 13, weight: .semibold, design: .rounded)).foregroundStyle(.white.opacity(0.58)).multilineTextAlignment(.center).frame(maxWidth: .infinity, alignment: .center)
         }.frame(maxWidth: .infinity, alignment: .center)
     }
 }
@@ -307,7 +310,7 @@ private struct SupportedDevicesTableSheet: View {
             HStack(alignment: .firstTextBaseline) {
                 VStack(alignment: .leading, spacing: 5) {
                     Text("Supported Devices").font(.system(size: 24, weight: .black, design: .rounded)).foregroundStyle(.white)
-                    Text("\(rows.count) connection paths across \(Set(rows.map(\.familyID)).count) device models").font(.system(size: 12, weight: .semibold, design: .rounded)).foregroundStyle(.white.opacity(0.62))
+                    Text(localizedFormat("%lld connection paths across %lld device models", rows.count, Set(rows.map(\.familyID)).count)).font(.system(size: 12, weight: .semibold, design: .rounded)).foregroundStyle(.white.opacity(0.62))
                 }
 
                 Spacer()
@@ -379,7 +382,7 @@ private struct SupportedDevicesTableHeader: View {
         }.padding(.horizontal, 14).padding(.vertical, 9).frame(maxWidth: .infinity, alignment: .leading).background(Color.white.opacity(0.06))
     }
 
-    private func tableHeader(_ text: String) -> some View { Text(text).font(.system(size: 11, weight: .black, design: .rounded)).foregroundStyle(.white.opacity(0.58)).textCase(.uppercase) }
+    private func tableHeader(_ text: String) -> some View { Text(LocalizedStringKey(text)).font(.system(size: 11, weight: .black, design: .rounded)).foregroundStyle(.white.opacity(0.58)).textCase(.uppercase) }
 }
 
 /// Renders the supported devices table row UI.
@@ -388,13 +391,13 @@ private struct SupportedDevicesTableRow: View {
 
     var body: some View {
         HStack(alignment: .center, spacing: 16) {
-            Text(row.name).font(.system(size: 13, weight: .bold, design: .rounded)).foregroundStyle(.white).lineLimit(1).frame(maxWidth: .infinity, alignment: .leading)
+            Text(LocalizedStringKey(row.name)).font(.system(size: 13, weight: .bold, design: .rounded)).foregroundStyle(.white).lineLimit(1).frame(maxWidth: .infinity, alignment: .leading)
 
             Pill(text: row.transport.connectionLabel, color: row.transport == .bluetooth ? Color(hex: 0x66D9FF) : Color(hex: 0xA8F46A), fontSize: 10, horizontalPadding: 8, verticalPadding: 4).frame(width: 108, alignment: .leading)
 
             Text(row.productIDs).font(.system(size: 12, weight: .semibold, design: .monospaced)).foregroundStyle(.white.opacity(0.78)).lineLimit(1).frame(width: 132, alignment: .leading)
 
-            Text(row.capabilities).font(.system(size: 12, weight: .semibold, design: .rounded)).foregroundStyle(.white.opacity(0.74)).lineLimit(1).frame(width: 320, alignment: .leading)
+            Text(LocalizedStringKey(row.capabilities)).font(.system(size: 12, weight: .semibold, design: .rounded)).foregroundStyle(.white.opacity(0.74)).lineLimit(1).frame(width: 320, alignment: .leading)
         }.padding(.horizontal, 14).padding(.vertical, 10).frame(maxWidth: .infinity, alignment: .leading)
     }
 }
@@ -464,9 +467,9 @@ private struct StatusNoticeCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(title).font(.system(size: 14, weight: .black, design: .rounded)).foregroundStyle(.white)
+            Text(LocalizedStringKey(title)).font(.system(size: 14, weight: .black, design: .rounded)).foregroundStyle(.white)
 
-            Text(message).font(.system(size: 12, weight: .semibold, design: .rounded)).foregroundStyle(.white.opacity(0.90))
+            Text(LocalizedStringKey(message)).font(.system(size: 12, weight: .semibold, design: .rounded)).foregroundStyle(.white.opacity(0.90))
 
             detailLinesView
 
@@ -480,7 +483,7 @@ private struct StatusNoticeCard: View {
         if !actions.isEmpty {
             HStack(spacing: 8) {
                 ForEach(Array(actions.enumerated()), id: \.offset) { _, action in
-                    if action.isProminent { Button(action.title, action: action.handler).buttonStyle(.borderedProminent).controlSize(.small) } else { Button(action.title, action: action.handler).buttonStyle(.bordered).controlSize(.small) }
+                    if action.isProminent { Button(LocalizedStringKey(action.title), action: action.handler).buttonStyle(.borderedProminent).controlSize(.small) } else { Button(LocalizedStringKey(action.title), action: action.handler).buttonStyle(.bordered).controlSize(.small) }
                 }
             }
         }
@@ -491,7 +494,7 @@ private struct StatusNoticeCard: View {
         let fontSize = usesMonospace ? 11.0 : 12.0
         let fontDesign: Font.Design = usesMonospace ? .monospaced : .rounded
 
-        return Text(line).font(.system(size: fontSize, weight: .medium, design: fontDesign)).foregroundStyle(.white.opacity(0.80)).textSelection(.enabled)
+        return Text(LocalizedStringKey(line)).font(.system(size: fontSize, weight: .medium, design: fontDesign)).foregroundStyle(.white.opacity(0.80)).textSelection(.enabled)
     }
 
     private var cardBackground: some View { RoundedRectangle(cornerRadius: 14).fill(tone.backgroundColor.opacity(0.92)).overlay(RoundedRectangle(cornerRadius: 14).stroke(tone.borderColor.opacity(0.55), lineWidth: 1)) }

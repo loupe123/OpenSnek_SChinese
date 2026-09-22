@@ -116,17 +116,17 @@ import SwiftUI
         _ = connectionDiagnosticsRevision
         guard let selectedDevice else { return nil }
         switch deviceController.connectionState(for: selectedDevice) {
-        case .reconnecting: return "Reconnecting to live telemetry. Controls will unlock automatically."
+        case .reconnecting: return localized("Reconnecting to live telemetry. Controls will unlock automatically.")
         case .disconnected:
             if selectedDevice.transport == .usb {
-                if deviceController.usbControlAvailability(for: selectedDevice) == .receiverAbsent { return "The USB receiver is not detected. Reconnect the dongle to continue." }
-                return "The USB dongle is connected, but the device is not responding. Wake or power on the device to reconnect."
+                if deviceController.usbControlAvailability(for: selectedDevice) == .receiverAbsent { return localized("The USB receiver is not detected. Reconnect the dongle to continue.") }
+                return localized("The USB dongle is connected, but the device is not responding. Wake or power on the device to reconnect.")
             }
-            return "This device is disconnected. Controls will unlock after it reconnects."
-        case .error: return errorMessage ?? "Live telemetry is unavailable right now."
+            return localized("This device is disconnected. Controls will unlock after it reconnects.")
+        case .error: return errorMessage ?? localized("Live telemetry is unavailable right now.")
         case .unsupported:
             if selectedDevice.transport == .usb, deviceController.usbControlAvailability(for: selectedDevice) == .noControlInterface {
-                return "This Razer device does not expose the standard Razer USB control interface on macOS, so OpenSnek cannot configure it. Its normal functions (such as audio and media keys) are unaffected."
+                return localized("This Razer device does not expose the standard Razer USB control interface on macOS, so OpenSnek cannot configure it. Its normal functions (such as audio and media keys) are unaffected.")
             }
             return nil
         case .connected: return nil
@@ -149,11 +149,11 @@ import SwiftUI
         let controlTransport = state?.connection ?? selectedDevice.connectionLabel
 
         let realtimeLabel: String
-        if selectedDeviceSupportsPassiveDPIInput { realtimeLabel = realtimeStatus.diagnosticsLabel } else { realtimeLabel = "Not used on this device" }
+        if selectedDeviceSupportsPassiveDPIInput { realtimeLabel = realtimeStatus.diagnosticsLabel } else { realtimeLabel = localized("Not used on this device") }
 
         return [
-            "Control transport: \(controlTransport)", "Telemetry: \(telemetryStatus.diagnosticsLabel)", selectedDevice.transport == .usb ? "USB control: \(deviceController.usbControlAvailability(for: selectedDevice).diagnosticsLabel)" : nil, "Real-time HID: \(realtimeLabel)",
-            "Input Monitoring: \(runtimeStore.hidAccessStatus.diagnosticsLabel)"
+            localizedFormat("Control transport: %@", controlTransport), localizedFormat("Telemetry: %@", telemetryStatus.diagnosticsLabel), selectedDevice.transport == .usb ? localizedFormat("USB control: %@", deviceController.usbControlAvailability(for: selectedDevice).diagnosticsLabel) : nil,
+            localizedFormat("Real-time HID: %@", realtimeLabel), localizedFormat("Input Monitoring: %@", runtimeStore.hidAccessStatus.diagnosticsLabel)
         ].compactMap { $0 }.joined(separator: "\n")
     }
 
@@ -164,13 +164,13 @@ import SwiftUI
         let realtimeStatus = deviceController.dpiUpdateTransportStatus(for: selectedDevice)
         let controlTransport = state?.connection ?? selectedDevice.connectionLabel
 
-        var lines = ["Transport: \(selectedDevice.connectionLabel)", "Connection state: \(telemetryStatus.diagnosticsLabel)", "Control transport: \(controlTransport)"]
+        var lines = [localizedFormat("Transport: %@", selectedDevice.connectionLabel), localizedFormat("Connection state: %@", telemetryStatus.diagnosticsLabel), localizedFormat("Control transport: %@", controlTransport)]
 
-        if selectedDevice.transport == .usb { lines.append("USB control: \(deviceController.usbControlAvailability(for: selectedDevice).diagnosticsLabel)") }
+        if selectedDevice.transport == .usb { lines.append(localizedFormat("USB control: %@", deviceController.usbControlAvailability(for: selectedDevice).diagnosticsLabel)) }
 
         if selectedDeviceSupportsPassiveDPIInput {
-            lines.append("Real-time HID: \(realtimeStatus.diagnosticsLabel)")
-            lines.append("Input Monitoring: \(runtimeStore.hidAccessStatus.diagnosticsLabel)")
+            lines.append(localizedFormat("Real-time HID: %@", realtimeStatus.diagnosticsLabel))
+            lines.append(localizedFormat("Input Monitoring: %@", runtimeStore.hidAccessStatus.diagnosticsLabel))
         }
 
         return lines.joined(separator: "\n")

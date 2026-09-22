@@ -1,0 +1,584 @@
+/*
+   OpenSnek 简体中文本地化
+   Simplified Chinese localization for OpenSnek.
+
+   键名使用英文原文（与源码中的字面量一致），值为对应中文翻译。
+   说明：本文件同时服务于 SwiftUI 的 Text/Label/Button 等 LocalizedStringKey
+   自动查找，以及代码中通过 String(localized:) 包裹的动态字符串。
+*/
+
+/* ===== 通用 ===== */
+"OpenSnek" = "OpenSnek";
+"Done" = "完成";
+"Cancel" = "取消";
+"Copy" = "拷贝";
+"Refresh" = "刷新";
+"Reset" = "重置";
+"Dismiss" = "忽略";
+"None" = "无";
+"Unsupported" = "不支持";
+"Warning" = "警告";
+"Notice" = "提示";
+"Loading" = "加载中";
+"Loading profile..." = "正在加载配置文件…";
+"Loading profile…" = "正在加载配置文件…";
+"Loading profiles" = "正在加载配置文件";
+"Reading onboard profiles" = "正在读取板载配置文件";
+"Profiles unavailable" = "配置文件不可用";
+"Profile inventory has not loaded yet." = "配置文件清单尚未加载。";
+"No profiles" = "无配置文件";
+"Manage onboard profiles" = "管理板载配置文件";
+"Refresh profiles" = "刷新配置文件";
+"Apply" = "应用";
+"Stop" = "停止";
+"Expand" = "展开";
+"Collapse" = "收起";
+"Rename" = "重命名";
+"Remove color" = "移除颜色";
+"Add color" = "添加颜色";
+"Add palette color" = "添加调色板颜色";
+"Start Fresh" = "从头开始";
+"Use Alone" = "单独使用";
+"Copy From" = "拷贝自";
+"Replace Selected Profile With" = "用以下内容替换所选配置文件";
+"Delete Profile" = "删除配置文件";
+"Delete From Slot" = "从槽位删除";
+"Recent" = "最近";
+"Reset App Data" = "重置应用数据";
+"Developer" = "开发者";
+
+/* ===== 侧边栏与设备列表 ===== */
+"Devices" = "设备";
+"Device" = "设备";
+"No supported device found" = "未找到受支持的设备";
+"Waiting for devices" = "等待设备";
+"Waiting for a supported mouse" = "等待受支持的鼠标";
+"Connect a device" = "连接设备";
+"Connect a supported mouse to edit DPI from the menu bar." = "连接受支持的鼠标后即可从菜单栏调整 DPI。";
+"No device connected" = "未连接设备";
+"No device selected" = "未选择设备";
+"Supported devices" = "受支持的设备";
+"Supported Devices" = "受支持的设备";
+"Open supported device table" = "打开受支持设备列表";
+"No supported devices match the current search." = "没有匹配当前搜索的受支持设备。";
+"Dev Build" = "开发版";
+"Local/development build. Update checks are disabled." = "本地/开发版本。已禁用更新检查。";
+"This build was produced from a local/development configuration." = "此版本由本地/开发配置构建。";
+"New Version Available" = "有新版本可用";
+"Update Dry Run" = "更新演练";
+"Show update options" = "显示更新选项";
+"Automatic update installation is not configured for this build." = "此版本未配置自动更新安装。";
+
+/* ===== 设备详情：状态与提示 ===== */
+"Disconnected" = "已断开";
+"Reconnecting" = "正在重连";
+"Connected" = "已连接";
+"Error" = "错误";
+"Live telemetry is unavailable right now." = "当前无法获取实时数据。";
+"Live telemetry is unavailable for this device right now." = "当前无法获取此设备的实时数据。";
+"Reconnecting to live telemetry" = "正在重新连接实时数据";
+"Reconnecting to live telemetry. Controls will unlock automatically." = "正在重新连接实时数据。控制项将自动解锁。";
+"Controls stay visible, but values may be stale until readback succeeds." = "控制项仍然可见，但在读取成功前数值可能已过期。";
+"The controls stay locked until the device reconnects and OpenSnek is receiving live updates again." = "设备重新连接且 OpenSnek 恢复接收实时更新前，控制项将保持锁定。";
+"This device is disconnected. Controls will unlock after it reconnects." = "此设备已断开。重新连接后控制项将解锁。";
+"Detected by macOS" = "已被 macOS 检测到";
+"Not detected" = "未检测到";
+"Device disconnected" = "设备已断开";
+"HID stream active" = "HID 数据流已激活";
+"Listening for first HID event" = "正在等待首个 HID 事件";
+"Polling fallback active" = "轮询回退已激活";
+"Unavailable" = "不可用";
+"Backend is still starting" = "后端仍在启动中";
+"Backend is still starting." = "后端仍在启动中。";
+"Limited Support" = "有限支持";
+"This mouse is not fully supported yet." = "此鼠标尚未完全支持。";
+"OpenSnek will show the controls it can verify safely. Use Diagnostics in bug reports so unsupported devices are easier to map." = "OpenSnek 只会显示能安全确认的控制项。请在问题反馈中附上诊断信息，以便更容易支持未适配的设备。";
+"Unsupported USB device. Only verified controls are shown." = "不受支持的 USB 设备。仅显示已验证的控制项。";
+"Vendor ID" = "厂商 ID";
+"Product ID" = "产品 ID";
+"Location ID" = "位置 ID";
+"Transport" = "连接方式";
+"Resolved profile" = "已解析配置文件";
+"Capabilities" = "支持功能";
+"Connecting to" = "正在连接";
+"Loading" = "正在加载";
+"Establishing the Bluetooth control link and reading your settings." = "正在建立蓝牙控制连接并读取你的设置。";
+"Reading device settings and preparing controls." = "正在读取设备设置并准备控制项。";
+
+/* ===== 设备诊断 ===== */
+"Diagnostics" = "诊断";
+"Device Diagnostics" = "设备诊断";
+"Connection Paths" = "连接通道";
+"Use this dump in bug reports when a device is unsupported, partially supported, or behaving unexpectedly." = "当设备不受支持、部分支持或行为异常时，请在问题反馈中附上此信息。";
+"GitHub Issue Payload" = "GitHub 问题信息";
+"Paste this into a GitHub bug report." = "请粘贴到 GitHub 问题反馈中。";
+"Preview Payload" = "预览信息";
+"Copy Payload" = "拷贝信息";
+"Open Bug Report" = "打开问题反馈";
+
+/* ===== 权限提示 ===== */
+"Allow Input Monitoring" = "允许“输入监控”";
+"USB Access Blocked" = "USB 访问被阻止";
+"USB Telemetry Limited" = "USB 数据受限";
+"USB telemetry is incomplete" = "USB 数据不完整";
+"Open Input Monitoring settings and turn on OpenSnek." = "打开“输入监控”设置并启用 OpenSnek。";
+"If it still looks stuck, use Reset Permissions and try again." = "如果仍然卡住，请使用“重置权限”后重试。";
+"After changing the permission, quit and reopen OpenSnek." = "修改权限后，请退出并重新打开 OpenSnek。";
+"OpenSnek needs one more macOS permission before it can read all USB settings from this mouse." = "OpenSnek 还需要一项 macOS 权限才能读取这只鼠标的全部 USB 设置。";
+"DPI, polling, or lighting readback is unavailable for this device session." = "本次设备会话中无法读取 DPI、回报率或灯光数据。";
+"OpenSnek can talk to" = "OpenSnek 可以与";
+"Open Settings" = "打开设置";
+"Reset Permissions" = "重置权限";
+"Device Read Unstable" = "设备读取不稳定";
+"Action Required" = "需要操作";
+
+/* ===== 通用设置 ===== */
+"General" = "通用";
+"Permissions" = "权限";
+"Input Monitoring" = "输入监控";
+"Show menu bar icon" = "显示菜单栏图标";
+"Start at login" = "登录时启动";
+"Logging" = "日志";
+"Log level" = "日志级别";
+"Log file" = "日志文件";
+"Open Log File" = "打开日志文件";
+"Open Log Folder" = "打开日志文件夹";
+"Clear Log" = "清空日志";
+"Use Info or Debug before reproducing a bug. Changing the level starts a fresh log file." = "复现问题前请先切换到 Info 或 Debug。更改级别会新建日志文件。";
+"Debug" = "调试";
+"Info" = "信息";
+"Error" = "错误";
+"Wipe Local Storage" = "清除本地存储";
+"Wipe OpenSnek local storage?" = "要清除 OpenSnek 本地存储吗？";
+"Wipe" = "清除";
+"This removes saved preferences, cached device settings, launch-at-login state, and local logs for OpenSnek." = "这将删除 OpenSnek 已保存的偏好设置、缓存的设备设置、登录时启动状态和本地日志。";
+"Wipe OpenSnek's saved preferences, cached device settings, background-service state, and local logs. Relaunch the app after resetting." = "清除 OpenSnek 已保存的偏好设置、缓存的设备设置、后台服务状态和本地日志。重置后请重新启动应用。";
+"Local storage cleared. Relaunch OpenSnek before reconnecting devices." = "本地存储已清除。请先重新启动 OpenSnek 再重连设备。";
+"Bug Reports" = "问题反馈";
+"Include the failing action, whether reconnecting changed it, and a log captured at Info or Debug." = "请说明出问题的操作、重连后是否有变化，并附上以 Info 或 Debug 级别抓取的日志。";
+"Enable runtime polling" = "启用运行时轮询";
+"Enable passive HID DPI stream" = "启用被动 HID DPI 数据流";
+"Enable setting storage" = "启用设置存储";
+"Remember window size" = "记住窗口大小";
+"Preview latest release update" = "预览最新版本更新";
+"Turn off Enable setting storage to apply mouse changes without updating OpenSnek's saved reconnect state. Re-enable it, then reconnect the mouse or relaunch OpenSnek to verify the last stored state rehydrates." = "关闭“启用设置存储”后，修改鼠标设置将不再更新 OpenSnek 保存的重连状态。重新启用后，请重连鼠标或重启 OpenSnek，以确认上次存储的状态能恢复。";
+"Use the transport switches to isolate polling from passive HID DPI callbacks during debugging, temporarily disable window-frame restore while testing launch behavior, or preview the latest GitHub release update prompt." = "使用这些开关可在调试时隔离轮询与被动 HID DPI 回调、在测试启动行为时临时关闭窗口位置恢复，或预览最新的 GitHub 发布更新提示。";
+
+/* ===== 菜单栏 ===== */
+"Show OpenSnek" = "显示 OpenSnek";
+"Settings…" = "设置…";
+"Quit" = "退出";
+"Menu bar service connected" = "菜单栏服务已连接";
+"Menu bar service stopped" = "菜单栏服务已停止";
+
+/* ===== DPI / 档位 ===== */
+"DPI" = "DPI";
+"DPI Stages" = "DPI 档位";
+"DPI Cycle" = "DPI 循环";
+"DPI Clutch" = "DPI 离合";
+"Clutch DPI" = "离合 DPI";
+"Stage" = "档位";
+"Current Mouse" = "当前鼠标";
+"DPI update failed" = "DPI 更新失败";
+
+/* ===== 回报率 / 电源 / 滚轮 ===== */
+"Polling Rate" = "回报率";
+"Rate" = "频率";
+"Power Management" = "电源管理";
+"Sleep timeout" = "休眠超时";
+"Low Battery Threshold" = "低电量阈值";
+"Threshold" = "阈值";
+"Approximate warning level" = "大致警告电量";
+"Scroll Controls" = "滚轮控制";
+"Wheel" = "滚轮";
+"Tactile" = "段落感";
+"Free Spin" = "自由滚动";
+"Acceleration" = "加速";
+"Smart Reel" = "智能滚轮";
+
+/* ===== 灯光 ===== */
+"Lighting" = "灯光";
+"Brightness" = "亮度";
+"Preset" = "预设";
+"Presets" = "预设";
+"Palette" = "调色板";
+"Color" = "颜色";
+"Zones" = "区域";
+"All Zones" = "全部区域";
+"Individual Zones" = "单个区域";
+"Direction" = "方向";
+"Speed" = "速度";
+"Left" = "左";
+"Right" = "右";
+"Static" = "静态";
+"Primary Color" = "主色";
+"Secondary Color" = "副色";
+"Battery Meter" = "电量指示";
+"Onboard" = "板载";
+"Advanced" = "高级";
+"Advanced effects run only while OpenSnek is running." = "高级灯效仅在 OpenSnek 运行时生效。";
+"Onboard lighting is stored on the device and survives restart and reconnect." = "板载灯光保存在设备上，重启和重连后依然有效。";
+"Apply on connect" = "连接时应用";
+"Off" = "关闭";
+"Spectrum" = "光谱";
+"Wave" = "波浪";
+"Reactive" = "响应式";
+"Breathing" = "呼吸";
+"Breathing Dual" = "双色呼吸";
+"Breathing Random" = "随机呼吸";
+"Breathing Single" = "单色呼吸";
+"Flame" = "火焰";
+"Scrolling Rainbow" = "滚动彩虹";
+"Comet Chase" = "彗星追逐";
+"Night Rider" = "游侠";
+"Aurora" = "极光";
+"Jellybeans" = "果冻豆";
+"Pulse" = "脉冲";
+"Pulse Random" = "随机脉冲";
+"Pulse Single" = "单色脉冲";
+"Pulse Dual" = "双色脉冲";
+
+/* ===== 按键映射 ===== */
+"Buttons" = "按键";
+"Button" = "按键";
+"Default" = "默认";
+"Left Click" = "左键单击";
+"Right Click" = "右键单击";
+"Middle Click" = "中键单击";
+"Back Button" = "后退键";
+"Forward Button" = "前进键";
+"Scroll Up" = "向上滚动";
+"Scroll Down" = "向下滚动";
+"Sensitivity Clutch" = "灵敏度离合";
+"Wheel Tilt Left" = "滚轮左倾";
+"Wheel Tilt Right" = "滚轮右倾";
+"DPI Button" = "DPI 按钮";
+"Profile Button" = "配置文件按钮";
+"Scroll Mode Toggle" = "滚轮模式切换";
+"Hypershift / Sniper" = "超级档 / 狙击键";
+"Turbo" = "连发";
+"Turbo rate: 1..20 presses per second" = "连发速率：每秒 1..20 次";
+"Slow" = "慢";
+"Fast" = "快";
+"Keyboard" = "键盘";
+"Clear Layer" = "清除层";
+"Press A Key" = "按下一个键";
+"Press one supported key" = "按下一个受支持的键";
+"Search keys" = "搜索按键";
+"Search action key" = "搜索操作按键";
+"Clear search" = "清除搜索";
+"Clear modifier" = "清除修饰键";
+"No supported keys" = "无受支持的按键";
+"Shortcuts can include modifiers." = "快捷键可以包含修饰键。";
+"Modifiers can be captured on their own." = "修饰键可以单独捕获。";
+"Media and macro families are still hidden until the underlying protocol taxonomy is validated." = "在下层协议分类验证完成前，媒体与宏按键族仍将隐藏。";
+"Some buttons can't be changed yet" = "部分按键暂不支持修改";
+"OpenSnek can still use the rest of the device normally." = "OpenSnek 仍可正常使用设备的其他功能。";
+"Letters" = "字母";
+"Numbers" = "数字";
+"Punctuation" = "标点";
+"Editing" = "编辑";
+"Navigation" = "导航";
+"Function" = "功能键";
+"Keypad" = "小键盘";
+"Modifiers" = "修饰键";
+"System" = "系统";
+"Mouse" = "鼠标";
+"Keyboard" = "键盘";
+
+/* ===== 板载配置文件 ===== */
+"Profile" = "配置文件";
+"Profiles" = "配置文件";
+"Onboard Profiles" = "板载配置文件";
+"Base" = "基础";
+"Base Profile" = "基础配置文件";
+"Profile name" = "配置文件名称";
+"Name this profile" = "为此配置文件命名";
+"New Profile" = "新建配置文件";
+"Load Profile" = "加载配置文件";
+"Load profile" = "加载配置文件";
+"No local profiles yet" = "暂无本地配置文件";
+"Rename local profile" = "重命名本地配置文件";
+"Delete this onboard slot without deleting local profile backups" = "仅删除板载槽位，本地配置文件备份会保留";
+"active" = "使用中";
+
+/* ===== 连接行为 ===== */
+"On Connect" = "连接时";
+"On Connect Behavior" = "连接时行为";
+"Use Mouse Settings" = "使用鼠标设置";
+"Restore Last Profile" = "恢复上次配置";
+"OpenSnek reads the current settings from the mouse when it connects and does not rewrite them automatically." = "连接时 OpenSnek 读取鼠标当前设置，不会自动改写。";
+"OpenSnek reapplies the last profile you changed here when this mouse connects." = "鼠标连接时，OpenSnek 会重新应用你在此处最后修改的配置文件。";
+"Show on connect details" = "显示连接行为详情";
+"Hide on connect details" = "隐藏连接行为详情";
+"Choose Restore Last Profile if you use this mouse with another computer or with Synapse. Vendor software can overwrite the live settings on reconnect, and this restores your OpenSnek setup." = "如果你会在其他电脑或配合 Synapse 使用这只鼠标，请选择“恢复上次配置”。厂商软件可能在重连时覆盖当前设置，此选项会恢复你的 OpenSnek 配置。";
+"Synapse will overwrite this profile. Save settings to a stored slot if you want to keep them." = "Synapse 会覆盖此配置文件。如需保留设置，请保存到已存储的槽位。";
+"Synapse can overwrite this profile when OpenSnek uses mouse settings on connect." = "当 OpenSnek 在连接时使用鼠标设置，Synapse 可能会覆盖此配置文件。";
+
+/* ===== 配置文件操作进度 ===== */
+"Applying profile..." = "正在应用配置文件…";
+"Applying profile…" = "正在应用配置文件…";
+"Creating profile..." = "正在创建配置文件…";
+"Deleting profile..." = "正在删除配置文件…";
+"Renaming profile..." = "正在重命名配置文件…";
+"Replacing profile..." = "正在替换配置文件…";
+"Saving profile…" = "正在保存配置文件…";
+"Removing profile…" = "正在移除配置文件…";
+"Loading from mouse..." = "正在从鼠标读取…";
+
+/* ===== 设备连接与协议提示 ===== */
+"Device not available" = "设备不可用";
+"Receiver absent" = "接收器未接入";
+"Receiver present, mouse unavailable" = "接收器已接入，鼠标不可用";
+"Mouse responding" = "鼠标有响应";
+"No Razer control interface" = "无雷蛇控制接口";
+"Razer Mouse" = "雷蛇鼠标";
+"Razer Bluetooth Device" = "雷蛇蓝牙设备";
+"This Razer device does not expose the standard Razer USB control interface, so OpenSnek cannot configure it on macOS." = "此雷蛇设备未提供标准雷蛇 USB 控制接口，因此 OpenSnek 无法在 macOS 上配置它。";
+"This Razer device does not expose the standard Razer USB control interface on macOS, so OpenSnek cannot configure it. Its normal functions (such as audio and media keys) are unaffected." =
+    "此雷蛇设备在 macOS 上未提供标准雷蛇 USB 控制接口，因此 OpenSnek 无法配置它。其常规功能（如音频和媒体按键）不受影响。";
+"The USB dongle is connected, but the device is not responding. Wake or power on the device to reconnect." = "USB 接收器已连接，但设备无响应。请唤醒或开启设备以重新连接。";
+"The USB receiver is not detected. Reconnect the dongle to continue." = "未检测到 USB 接收器。请重新插入接收器以继续。";
+"USB HID access denied" = "USB HID 访问被拒绝";
+"USB HID access denied by macOS. Enable Input Monitoring for OpenSnek" = "macOS 拒绝了 USB HID 访问。请为 OpenSnek 启用“输入监控”";
+"USB HID access denied. Grant Input Monitoring and relaunch." = "USB HID 访问被拒绝。请授予“输入监控”权限并重新启动。";
+"USB device telemetry unavailable" = "无法获取 USB 设备数据";
+"USB device telemetry unavailable. Feature-report interface did not return usable responses." = "无法获取 USB 设备数据。特性报告接口未返回可用响应。";
+"Bluetooth access unauthorized; allow OpenSnek in System Settings > Privacy & Security > Bluetooth" = "蓝牙访问未授权；请在“系统设置 > 隐私与安全性 > 蓝牙”中允许 OpenSnek";
+"Bluetooth is powered off" = "蓝牙已关闭";
+"Bluetooth is unsupported on this Mac" = "此 Mac 不支持蓝牙";
+"Bluetooth state is unsupported" = "蓝牙状态不受支持";
+"BT vendor busy" = "蓝牙通道忙";
+"BT vendor timeout" = "蓝牙通道超时";
+"Input Monitoring is required before macOS will allow HID listeners and feature-report access." = "macOS 要求先授予“输入监控”权限，才允许使用 HID 监听和特性报告访问。";
+"Input Monitoring is granted; macOS refuses the bulk HID-manager open because protected keyboard interfaces are present, so OpenSnek uses per-device opens." = "已授予“输入监控”权限；由于存在受保护的键盘接口，macOS 拒绝批量打开 HID 管理器，因此 OpenSnek 改为逐个打开设备。";
+"IOHID access not permitted; USB access may be blocked unless Input Monitoring permission is granted" = "未获得 IOHID 访问权限；除非授予“输入监控”权限，否则 USB 访问可能被阻止";
+"Enable Input Monitoring for OpenSnek (or Terminal/Xcode when running via swift run/Xcode)," = "请为 OpenSnek 启用“输入监控”（通过 swift run 或 Xcode 运行时则为终端/Xcode），";
+"or ensure a supported Bluetooth device is connected." = "或确保已连接受支持的蓝牙设备。";
+
+/* ===== 板载配置文件操作提示 ===== */
+"Onboard profile CRUD is not supported by this backend." = "此后端不支持板载配置文件的增删改查。";
+"Mapped onboard profile CRUD is not supported on this device." = "此设备不支持已映射的板载配置文件增删改查。";
+"The base onboard profile cannot be deleted." = "无法删除基础板载配置文件。";
+"No onboard profile slot is selected." = "未选择板载配置文件槽位。";
+"No unassigned onboard profile slots are available." = "没有可用的未分配板载配置文件槽位。";
+"Failed to refresh onboard profiles:" = "刷新板载配置文件失败：";
+"Missing source USB button profile" = "缺少源 USB 按键配置文件";
+"USB onboard profile operation requested for non-USB device." = "对非 USB 设备请求了板载配置文件操作。";
+"USB onboard profile create was rejected." = "板载配置文件创建被拒绝。";
+"USB onboard profile delete was rejected." = "板载配置文件删除被拒绝。";
+"USB onboard profile selector was rejected." = "板载配置文件选择被拒绝。";
+"USB onboard profile inventory read failed." = "板载配置文件清单读取失败。";
+"USB onboard profile contains a button default that OpenSnek cannot safely restore." = "板载配置文件包含 OpenSnek 无法安全恢复的按键默认值。";
+"Bluetooth onboard profile create was rejected." = "蓝牙板载配置文件创建被拒绝。";
+"Bluetooth onboard profile delete was rejected." = "蓝牙板载配置文件删除被拒绝。";
+"Bluetooth onboard profile selector was rejected." = "蓝牙板载配置文件选择被拒绝。";
+"Bluetooth onboard profile inventory read failed." = "蓝牙板载配置文件清单读取失败。";
+"Bluetooth onboard profile contains a button default that OpenSnek cannot safely restore." = "蓝牙板载配置文件包含 OpenSnek 无法安全恢复的按键默认值。";
+"Software lighting is not supported by this backend." = "此后端不支持软件灯效。";
+"Software lighting is not supported for this device" = "此设备不支持软件灯效";
+"Software lighting is not supported for this device." = "此设备不支持软件灯效。";
+"Software lighting frames are not supported for this device" = "此设备不支持软件灯效帧";
+"Failed to write software lighting frame" = "写入软件灯效帧失败";
+
+/* ===== 设备能力提示（核心层） ===== */
+"Generic best-effort" = "通用尽力支持";
+"Validated profile" = "已验证配置文件";
+"Mapped profile (not locally validated)" = "已映射配置文件（未本地验证）";
+"Live state unavailable" = "无法获取实时状态";
+"None mapped" = "无映射";
+"No mapped button layout" = "无已映射按键布局";
+"Hidden unsupported buttons: none" = "隐藏的不支持按键：无";
+"Hidden unsupported buttons:" = "隐藏的不支持按键：";
+"Not used on this device" = "此设备未使用";
+"charging state unknown" = "充电状态未知";
+"not charging" = "未充电";
+"OpenSnek can detect this button, but this mouse does not expose remapping for it yet." = "OpenSnek 能检测到此按键，但这只鼠标尚未开放其重映射。";
+"OpenSnek can see this button, but it cannot change it yet." = "OpenSnek 能识别此按键，但暂不支持修改。";
+"OpenSnek can see this button, but the mouse does not let apps remap it yet." = "OpenSnek 能识别此按键，但鼠标尚未允许应用重映射。";
+"OpenSnek can see this button, but profile-button remap ACK/readback is not stable enough to expose yet." = "OpenSnek 能识别此按键，但配置文件按键的重映射确认/回读尚不稳定，暂不开放。";
+"This button uses a separate device path, so OpenSnek cannot reassign it yet." = "此按键使用独立的设备通道，因此 OpenSnek 暂无法重新分配。";
+"The V3 Pro Bluetooth path still needs capture-backed profile-button defaults before OpenSnek can expose this control." = "V3 Pro 蓝牙通道还需要抓包验证的配置文件按键默认值，OpenSnek 才能开放此控制项。";
+"The native class-0x03 function block is not decoded yet, so OpenSnek preserves this button." = "原生的 class-0x03 功能块尚未解析，因此 OpenSnek 会保留此按键。";
+
+/* ===== 各类设置写入失败提示 ===== */
+"Failed to set DPI" = "设置 DPI 失败";
+"Failed to set DPI stages" = "设置 DPI 档位失败";
+"Failed to set poll rate" = "设置回报率失败";
+"Failed to set LED brightness" = "设置 LED 亮度失败";
+"Failed to set LED color" = "设置 LED 颜色失败";
+"Failed to set lighting effect" = "设置灯效失败";
+"Failed to set low battery threshold" = "设置低电量阈值失败";
+"Failed to set sleep timeout" = "设置休眠超时失败";
+"Failed to set device mode" = "设置设备模式失败";
+"Failed to set button binding" = "设置按键绑定失败";
+"Failed to set scroll mode" = "设置滚轮模式失败";
+"Failed to set scroll acceleration" = "设置滚轮加速失败";
+"Failed to set scroll smart reel" = "设置智能滚轮失败";
+"Failed to apply active DPI stage" = "应用当前 DPI 档位失败";
+"Failed to verify DPI write" = "校验 DPI 写入失败";
+"Failed to verify DPI stage write" = "校验 DPI 档位写入失败";
+"Failed to verify active DPI stage" = "校验当前 DPI 档位失败";
+"Failed to resolve current DPI stages" = "解析当前 DPI 档位失败";
+"Failed to set Bluetooth DPI stages" = "设置蓝牙 DPI 档位失败";
+"Failed to resolve Bluetooth DPI stages" = "解析蓝牙 DPI 档位失败";
+"Failed to set Bluetooth RGB" = "设置蓝牙 RGB 失败";
+"Failed to set Bluetooth button binding" = "设置蓝牙按键绑定失败";
+"Failed to set Bluetooth lighting value" = "设置蓝牙灯光数值失败";
+"Failed to set Bluetooth sleep timeout" = "设置蓝牙休眠超时失败";
+"Failed to duplicate USB button profile" = "复制 USB 按键配置文件失败";
+"Failed to reset USB button profile" = "重置 USB 按键配置文件失败";
+"Failed to project USB button profile to direct layer" = "将 USB 按键配置文件投射到直接层失败";
+
+/* ===== 后台服务错误 ===== */
+"Background service connection closed unexpectedly" = "后台服务连接意外关闭";
+"Background service did not start in time" = "后台服务未及时启动";
+"Background service listener did not publish a port" = "后台服务监听未发布端口";
+"Background service request was missing its payload" = "后台服务请求缺少负载";
+"Background service returned an invalid message" = "后台服务返回了无效消息";
+"Background service returned no payload" = "后台服务未返回负载";
+"Failed to query HID access status from background service." = "从后台服务查询 HID 访问状态失败。";
+
+/* ===== 标签枚举补充 ===== */
+"Bluetooth" = "蓝牙";
+"BT" = "蓝牙";
+"Live" = "实时";
+"Pulse (Random)" = "脉冲（随机）";
+"Pulse (Single)" = "脉冲（单色）";
+"Pulse (Dual)" = "脉冲（双色）";
+"Scroll Left" = "向左滚动";
+"Scroll Right" = "向右滚动";
+"Mouse Back" = "鼠标后退";
+"Mouse Forward" = "鼠标前进";
+"Keyboard Key" = "键盘按键";
+"Disabled" = "已禁用";
+"Function Keys" = "功能键";
+"Mouse" = "鼠标";
+"effect" = "灯效";
+
+/* ===== 带占位符的格式模板 ===== */
+"Slot %lld" = "槽位 %lld";
+"Profile %lld" = "配置文件 %lld";
+"Stage %lld" = "档位 %lld";
+"Stage %lld DPI" = "档位 %lld DPI";
+"Stage %lld X/Y DPI" = "档位 %lld X/Y DPI";
+"Connecting to %@" = "正在连接 %@";
+"Loading %@" = "正在加载 %@";
+"Running %@" = "正在运行 %@";
+"Onboard %@" = "板载 %@";
+"Current app host: %@" = "当前应用宿主：%@";
+"Current binding: %@" = "当前绑定：%@";
+"%@ palette color %lld" = "%@ 调色板颜色 %lld";
+"%lld profiles" = "%lld 个配置文件";
+"%lld models · %lld connection paths" = "%lld 个型号 · %lld 种连接方式";
+"%lld connection paths across %lld device models" = "共 %lld 种连接方式，覆盖 %lld 个设备型号";
+"Enabled stages: %lld / %lld" = "已启用档位：%lld / %lld";
+"Current split: X %lld / Y %lld" = "当前分轴：X %lld / Y %lld";
+
+/* ===== 按键名称 ===== */
+"DPI Up" = "DPI 提高";
+"DPI Down" = "DPI 降低";
+"Panel Button 1" = "面板按键 1";
+"Panel Button 2" = "面板按键 2";
+"Side Button 1" = "侧键 1";
+"Side Button 2" = "侧键 2";
+"Side Button 3" = "侧键 3";
+"Side Button 4" = "侧键 4";
+"Side Button 5" = "侧键 5";
+"Side Button 6" = "侧键 6";
+"Side Button 7" = "侧键 7";
+"Side Button 8" = "侧键 8";
+"Side Button 9" = "侧键 9";
+"Side Button 10" = "侧键 10";
+"Side Button 11" = "侧键 11";
+"Side Button 12" = "侧键 12";
+"2-Button Panel" = "2 键面板";
+"6-Button Panel" = "6 键面板";
+"12-Button Panel" = "12 键面板";
+
+/* ===== 键盘按键名 ===== */
+"Space" = "空格";
+"Return" = "回车";
+"Escape" = "Esc";
+"Tab" = "Tab";
+"Delete" = "删除";
+"Forward Delete" = "向前删除";
+"Caps Lock" = "大写锁定";
+"Shift" = "Shift";
+"Control" = "Control";
+"Option" = "Option";
+"Command" = "Command";
+"Left Shift" = "左 Shift";
+"Right Shift" = "右 Shift";
+"Left Control" = "左 Control";
+"Right Control" = "右 Control";
+"Left Option" = "左 Option";
+"Right Option" = "右 Option";
+"Left Command" = "左 Command";
+"Right Command" = "右 Command";
+"Left Arrow" = "左方向键";
+"Right Arrow" = "右方向键";
+"Up Arrow" = "上方向键";
+"Down Arrow" = "下方向键";
+"Home" = "Home";
+"End" = "End";
+"Page Up" = "Page Up";
+"Page Down" = "Page Down";
+"Insert" = "Insert";
+"Print Screen" = "Print Screen";
+"Scroll Lock" = "Scroll Lock";
+"Pause" = "Pause";
+"Num Lock" = "Num Lock";
+"Menu" = "菜单键";
+"Keypad Enter" = "小键盘回车";
+"Keypad +" = "小键盘 +";
+"Keypad -" = "小键盘 -";
+"Keypad *" = "小键盘 *";
+"Keypad /" = "小键盘 /";
+"Keypad ." = "小键盘 .";
+"Keypad =" = "小键盘 =";
+"Keypad 0" = "小键盘 0";
+"Keypad 1" = "小键盘 1";
+"Keypad 2" = "小键盘 2";
+"Keypad 3" = "小键盘 3";
+"Keypad 4" = "小键盘 4";
+"Keypad 5" = "小键盘 5";
+"Keypad 6" = "小键盘 6";
+"Keypad 7" = "小键盘 7";
+"Keypad 8" = "小键盘 8";
+"Keypad 9" = "小键盘 9";
+
+/* ===== 设备交互提示补充 ===== */
+"Input Monitoring detail" = "输入监控详情";
+"Current error" = "当前错误";
+"Last updated" = "最后更新";
+"Never" = "从未";
+"Unknown" = "未知";
+
+/* ===== 灯效预设占位补充 ===== */
+"Reactive" = "响应式";
+"Static Color" = "静态颜色";
+"Wave Direction" = "波浪方向";
+"Breathing Random" = "随机呼吸";
+"Breathing Single" = "单色呼吸";
+"Breathing Dual" = "双色呼吸";
+"Pulse Random" = "随机脉冲";
+"Pulse Single" = "单色脉冲";
+"Pulse Dual" = "双色脉冲";
+
+/* ===== 状态提示格式模板 ===== */
+"Control transport: %@" = "控制通道：%@";
+"Telemetry: %@" = "遥测：%@";
+"USB control: %@" = "USB 控制：%@";
+"Real-time HID: %@" = "实时 HID：%@";
+"Input Monitoring: %@" = "输入监控：%@";
+"Transport: %@" = "连接方式：%@";
+"Connection state: %@" = "连接状态：%@";
+"Selected device ID: %@" = "已选设备 ID：%@";
+"App version: %@" = "应用版本：%@";
+"Build: %@" = "构建号：%@";
+"Checking" = "检查中";
+"Granted" = "已授权";
+"Denied" = "已拒绝";
+"Real-time HID active" = "实时 HID 已激活";
+"Function Keys" = "功能键";

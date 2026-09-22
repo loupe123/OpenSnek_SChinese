@@ -1,4 +1,5 @@
 import Foundation
+import OpenSnekCore
 
 /// Defines keyboard binding group values.
 enum KeyboardBindingGroup: String, CaseIterable, Identifiable {
@@ -16,15 +17,15 @@ enum KeyboardBindingGroup: String, CaseIterable, Identifiable {
 
     var label: String {
         switch self {
-        case .letters: return "Letters"
-        case .numbers: return "Numbers"
-        case .punctuation: return "Punctuation"
-        case .editing: return "Editing"
-        case .navigation: return "Navigation"
-        case .function: return "Function Keys"
-        case .keypad: return "Keypad"
-        case .modifiers: return "Modifiers"
-        case .system: return "System"
+        case .letters: return localized("Letters")
+        case .numbers: return localized("Numbers")
+        case .punctuation: return localized("Punctuation")
+        case .editing: return localized("Editing")
+        case .navigation: return localized("Navigation")
+        case .function: return localized("Function Keys")
+        case .keypad: return localized("Keypad")
+        case .modifiers: return localized("Modifiers")
+        case .system: return localized("System")
         }
     }
 }

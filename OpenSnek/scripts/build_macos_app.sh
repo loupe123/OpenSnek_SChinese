@@ -276,6 +276,11 @@ stage_swiftpm_app() {
   ditto "$built_framework" "$frameworks_dir/Sparkle.framework"
   ditto "$PACKAGE_DIR/App/Resources/snek-menu-template.png" "$resources_dir/snek-menu-template.png"
   ditto "$PACKAGE_DIR/App/Resources/snek-menu.png" "$resources_dir/snek-menu.png"
+  # Copy every localized .lproj so Bundle.main string lookups resolve on the SwiftPM path too.
+  for lproj_dir in "$PACKAGE_DIR"/App/Resources/*.lproj; do
+    [[ -d "$lproj_dir" ]] || continue
+    ditto "$lproj_dir" "$resources_dir/$(basename "$lproj_dir")"
+  done
 
   install_name_tool -add_rpath "@executable_path/../Frameworks" "$executable_dir/$PRODUCT_NAME"
 

@@ -8,14 +8,14 @@ public enum DeviceTransportKind: String, CaseIterable, Codable, Hashable, Sendab
     public var connectionLabel: String {
         switch self {
         case .usb: return "USB"
-        case .bluetooth: return "Bluetooth"
+        case .bluetooth: return localized("Bluetooth")
         }
     }
 
     public var shortLabel: String {
         switch self {
         case .usb: return "USB"
-        case .bluetooth: return "BT"
+        case .bluetooth: return localized("BT")
         }
     }
 
@@ -347,14 +347,14 @@ public enum LightingEffectKind: String, CaseIterable, Identifiable, Codable, Sen
 
     public var label: String {
         switch self {
-        case .off: return "Off"
-        case .staticColor: return "Static"
-        case .spectrum: return "Spectrum"
-        case .wave: return "Wave"
-        case .reactive: return "Reactive"
-        case .pulseRandom: return "Pulse (Random)"
-        case .pulseSingle: return "Pulse (Single)"
-        case .pulseDual: return "Pulse (Dual)"
+        case .off: return localized("Off")
+        case .staticColor: return localized("Static")
+        case .spectrum: return localized("Spectrum")
+        case .wave: return localized("Wave")
+        case .reactive: return localized("Reactive")
+        case .pulseRandom: return localized("Pulse (Random)")
+        case .pulseSingle: return localized("Pulse (Single)")
+        case .pulseDual: return localized("Pulse (Dual)")
         }
     }
 
@@ -381,8 +381,8 @@ public enum LightingWaveDirection: Int, CaseIterable, Identifiable, Codable, Sen
 
     public var label: String {
         switch self {
-        case .left: return "Left"
-        case .right: return "Right"
+        case .left: return localized("Left")
+        case .right: return localized("Right")
         }
     }
 }
@@ -535,20 +535,20 @@ public enum ButtonBindingKind: String, CaseIterable, Identifiable, Codable, Send
 
     public var label: String {
         switch self {
-        case .default: return "Default"
-        case .dpiCycle: return "DPI Cycle"
-        case .dpiClutch: return "DPI Clutch"
-        case .leftClick: return "Left Click"
-        case .rightClick: return "Right Click"
-        case .middleClick: return "Middle Click"
-        case .scrollUp: return "Scroll Up"
-        case .scrollDown: return "Scroll Down"
-        case .scrollLeft: return "Scroll Left"
-        case .scrollRight: return "Scroll Right"
-        case .mouseBack: return "Mouse Back"
-        case .mouseForward: return "Mouse Forward"
-        case .keyboardSimple: return "Keyboard Key"
-        case .clearLayer: return "Disabled"
+        case .default: return localized("Default")
+        case .dpiCycle: return localized("DPI Cycle")
+        case .dpiClutch: return localized("DPI Clutch")
+        case .leftClick: return localized("Left Click")
+        case .rightClick: return localized("Right Click")
+        case .middleClick: return localized("Middle Click")
+        case .scrollUp: return localized("Scroll Up")
+        case .scrollDown: return localized("Scroll Down")
+        case .scrollLeft: return localized("Scroll Left")
+        case .scrollRight: return localized("Scroll Right")
+        case .mouseBack: return localized("Mouse Back")
+        case .mouseForward: return localized("Mouse Forward")
+        case .keyboardSimple: return localized("Keyboard Key")
+        case .clearLayer: return localized("Disabled")
         }
     }
 

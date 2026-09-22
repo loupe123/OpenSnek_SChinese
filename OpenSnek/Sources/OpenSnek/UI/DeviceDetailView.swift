@@ -235,9 +235,9 @@ struct GenericDeviceDetailView: View {
 
                 if resolvedProfile == nil {
                     Card(title: "Limited Support") {
-                        Text(primaryMessage).font(.system(size: 13, weight: .bold, design: .rounded)).foregroundStyle(.white.opacity(0.88)).frame(maxWidth: .infinity, alignment: .leading)
+                        Text(LocalizedStringKey(primaryMessage)).font(.system(size: 13, weight: .bold, design: .rounded)).foregroundStyle(.white.opacity(0.88)).frame(maxWidth: .infinity, alignment: .leading)
 
-                        Text(secondaryMessage).hintTextStyle().frame(maxWidth: .infinity, alignment: .leading)
+                        Text(LocalizedStringKey(secondaryMessage)).hintTextStyle().frame(maxWidth: .infinity, alignment: .leading)
 
                         VStack(alignment: .leading, spacing: 6) {
                             diagnosticRow(label: "Vendor ID", value: String(format: "0x%04X", selected.vendor_id))
@@ -262,8 +262,8 @@ struct GenericDeviceDetailView: View {
 
     @ViewBuilder private func diagnosticRow(label: String, value: String) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: 12) {
-            Text(label).font(.system(size: 12, weight: .bold, design: .rounded)).foregroundStyle(.white.opacity(0.68)).frame(width: 110, alignment: .leading)
-            Text(value).font(.system(size: 12, weight: .medium, design: .monospaced)).foregroundStyle(.white.opacity(0.82)).textSelection(.enabled)
+            Text(LocalizedStringKey(label)).font(.system(size: 12, weight: .bold, design: .rounded)).foregroundStyle(.white.opacity(0.68)).frame(width: 110, alignment: .leading)
+            Text(LocalizedStringKey(value)).font(.system(size: 12, weight: .medium, design: .monospaced)).foregroundStyle(.white.opacity(0.82)).textSelection(.enabled)
         }.frame(maxWidth: .infinity, alignment: .leading)
     }
 }
@@ -279,7 +279,7 @@ struct DeviceUnavailableDetailView: View {
                 GenericDeviceOverviewBar(deviceStore: deviceStore, selected: selected)
 
                 Card(title: deviceStore.currentDeviceStatusIndicator.label) {
-                    Text(deviceStore.selectedDeviceInteractionMessage ?? "Live telemetry is unavailable for this device right now.").font(.system(size: 13, weight: .bold, design: .rounded)).foregroundStyle(.white.opacity(0.88)).frame(maxWidth: .infinity, alignment: .leading)
+                    Text(LocalizedStringKey(deviceStore.selectedDeviceInteractionMessage ?? "Live telemetry is unavailable for this device right now.")).font(.system(size: 13, weight: .bold, design: .rounded)).foregroundStyle(.white.opacity(0.88)).frame(maxWidth: .infinity, alignment: .leading)
 
                     Text("The controls stay locked until the device reconnects and OpenSnek is receiving live updates again.").hintTextStyle().frame(maxWidth: .infinity, alignment: .leading)
 
@@ -311,15 +311,15 @@ struct DeviceConnectingDetailView: View {
 
     private var headline: String {
         switch selected.transport {
-        case .bluetooth: "Connecting to \(selected.product_name)"
-        case .usb: "Loading \(selected.product_name)"
+        case .bluetooth: localizedFormat("Connecting to %@", selected.product_name)
+        case .usb: localizedFormat("Loading %@", selected.product_name)
         }
     }
 
     private var subtitle: String {
         switch selected.transport {
-        case .bluetooth: "Establishing the Bluetooth control link and reading your settings."
-        case .usb: "Reading device settings and preparing controls."
+        case .bluetooth: localized("Establishing the Bluetooth control link and reading your settings.")
+        case .usb: localized("Reading device settings and preparing controls.")
         }
     }
 }
@@ -342,9 +342,9 @@ private struct DeviceConnectionLoadingContent: View {
             ProgressView().controlSize(.large).tint(.white.opacity(0.92))
 
             VStack(spacing: 8) {
-                Text(headline).font(.system(size: 24, weight: .black, design: .rounded)).foregroundStyle(.white)
+                Text(LocalizedStringKey(headline)).font(.system(size: 24, weight: .black, design: .rounded)).foregroundStyle(.white)
 
-                Text(subtitle).font(.system(size: 13, weight: .semibold, design: .rounded)).foregroundStyle(.white.opacity(0.68)).multilineTextAlignment(.center).frame(maxWidth: 320)
+                Text(LocalizedStringKey(subtitle)).font(.system(size: 13, weight: .semibold, design: .rounded)).foregroundStyle(.white.opacity(0.68)).multilineTextAlignment(.center).frame(maxWidth: 320)
             }
         }
     }
@@ -426,7 +426,7 @@ private struct DeviceStatusBadgeContent: View {
         HStack(spacing: 8) {
             Circle().fill(indicator.color).frame(width: 9, height: 9).shadow(color: indicator.color.opacity(0.45), radius: 6, y: 0)
 
-            Text(indicator.label).font(.system(size: 11, weight: .black, design: .rounded)).foregroundStyle(.white.opacity(0.82)).accessibilityIdentifier("device-status-label").accessibilityLabel(indicator.label)
+            Text(LocalizedStringKey(indicator.label)).font(.system(size: 11, weight: .black, design: .rounded)).foregroundStyle(.white.opacity(0.82)).accessibilityIdentifier("device-status-label").accessibilityLabel(indicator.label)
         }
     }
 }
@@ -507,7 +507,7 @@ private struct DeviceDiagnosticsConnectionPanel: View {
         }.frame(maxWidth: .infinity, alignment: .leading).padding(12).background(panelBackground)
     }
 
-    private func connectionLine(_ line: String) -> some View { Text(line).font(.system(size: 12, weight: .medium, design: .rounded)).foregroundStyle(.secondary) }
+    private func connectionLine(_ line: String) -> some View { Text(LocalizedStringKey(line)).font(.system(size: 12, weight: .medium, design: .rounded)).foregroundStyle(.secondary) }
 
     private var panelBackground: some View { RoundedRectangle(cornerRadius: 12).fill(Color.black.opacity(0.04)).overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.primary.opacity(0.08), lineWidth: 1)) }
 }

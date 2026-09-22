@@ -1,4 +1,5 @@
 import Foundation
+import OpenSnekCore
 import OSLog
 
 /// Defines app log level values.
@@ -12,10 +13,10 @@ enum AppLogLevel: String, CaseIterable, Identifiable, Comparable {
 
     var label: String {
         switch self {
-        case .debug: "Debug"
-        case .info: "Info"
-        case .warning: "Warning"
-        case .error: "Error"
+        case .debug: localized("Debug")
+        case .info: localized("Info")
+        case .warning: localized("Warning")
+        case .error: localized("Error")
         }
     }
 

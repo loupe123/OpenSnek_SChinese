@@ -12,7 +12,7 @@ struct LightingColorOrbRow: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            Text(title).font(.system(size: 13, weight: .bold, design: .rounded)).foregroundStyle(.white.opacity(0.82)).lineLimit(1).truncationMode(.tail)
+            Text(LocalizedStringKey(title)).font(.system(size: 13, weight: .bold, design: .rounded)).foregroundStyle(.white.opacity(0.82)).lineLimit(1).truncationMode(.tail)
 
             Spacer(minLength: 12)
 
@@ -64,7 +64,7 @@ struct LightingColorPopoverEditor: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text(title).font(.system(size: 13, weight: .bold, design: .rounded)).foregroundStyle(.white.opacity(0.88))
+            Text(LocalizedStringKey(title)).font(.system(size: 13, weight: .bold, design: .rounded)).foregroundStyle(.white.opacity(0.88))
 
             colorRow(title: "Presets", colors: swatches.map(\.rgb), identifier: "preset")
 
@@ -84,7 +84,7 @@ struct LightingColorPopoverEditor: View {
 
     @ViewBuilder private func colorRow(title: String, colors: [RGBColor], identifier: String) -> some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text(title).font(.system(size: 11, weight: .bold, design: .rounded)).foregroundStyle(.white.opacity(0.58))
+            Text(LocalizedStringKey(title)).font(.system(size: 11, weight: .bold, design: .rounded)).foregroundStyle(.white.opacity(0.58))
 
             HStack(spacing: 8) { ForEach(Array(colors.enumerated()), id: \.offset) { index, rgb in ColorSwatchButton(color: Color(rgb: rgb), isSelected: rgb == color, action: { color = rgb }).accessibilityIdentifier("\(identifierPrefix)-\(identifier)-swatch-\(index)") } }
         }
@@ -130,7 +130,7 @@ struct SoftwareLightingPaletteEditor: View {
 
     private func paletteColorItem(_ index: Int) -> some View {
         VStack(spacing: 5) {
-            LightingColorOrbPicker(title: "\(preset.label) palette color \(index + 1)", identifierPrefix: "software-lighting-palette-\(index)", color: paletteBinding(index), swatches: swatches)
+            LightingColorOrbPicker(title: localizedFormat("%@ palette color %lld", preset.label, index + 1), identifierPrefix: "software-lighting-palette-\(index)", color: paletteBinding(index), swatches: swatches)
 
             if maximumPaletteColorCount > 1 { PaletteRemoveColorButton(index: index, canRemove: palette.count > 1, remove: { onRemove(index) }) } else { PaletteRemoveColorPlaceholder() }
         }.frame(width: 44)

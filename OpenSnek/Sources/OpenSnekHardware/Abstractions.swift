@@ -28,11 +28,11 @@ public enum USBControlAvailability: String, Codable, Hashable, Sendable {
 
     public var diagnosticsLabel: String {
         switch self {
-        case .unknown: return "Unknown"
-        case .receiverPresentMouseReachable: return "Mouse responding"
-        case .receiverPresentMouseUnavailable: return "Receiver present, mouse unavailable"
-        case .receiverAbsent: return "Receiver absent"
-        case .noControlInterface: return "No Razer control interface"
+        case .unknown: return localized("Unknown")
+        case .receiverPresentMouseReachable: return localized("Mouse responding")
+        case .receiverPresentMouseUnavailable: return localized("Receiver present, mouse unavailable")
+        case .receiverAbsent: return localized("Receiver absent")
+        case .noControlInterface: return localized("No Razer control interface")
         }
     }
 

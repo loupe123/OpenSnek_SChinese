@@ -119,7 +119,7 @@ struct ServiceMenuBarView: View {
             statusRow
             if showsDeviceControls {
                 VStack(alignment: .leading, spacing: 10) {
-                    if !controlsEnabled, let message = deviceStore.selectedDeviceInteractionMessage { Text(message).font(.system(size: 11, weight: .bold, design: .rounded)).foregroundStyle(.secondary) }
+                    if !controlsEnabled, let message = deviceStore.selectedDeviceInteractionMessage { Text(LocalizedStringKey(message)).font(.system(size: 11, weight: .bold, design: .rounded)).foregroundStyle(.secondary) }
 
                     VStack(alignment: .leading, spacing: 14) {
                         stagePicker
@@ -129,7 +129,7 @@ struct ServiceMenuBarView: View {
                     if let message = runtimeStore.compactStatusMessage { Text(message).font(.system(size: 11, weight: .bold, design: .rounded)).foregroundStyle(.secondary) }
                 }
             } else if let message = deviceStore.selectedDeviceInteractionMessage {
-                Text(message).font(.system(size: 11, weight: .medium, design: .rounded)).foregroundStyle(.secondary)
+                Text(LocalizedStringKey(message)).font(.system(size: 11, weight: .medium, design: .rounded)).foregroundStyle(.secondary)
             } else {
                 Text("Connect a supported mouse to edit DPI from the menu bar.").font(.system(size: 11, weight: .medium, design: .rounded)).foregroundStyle(.secondary)
             }
@@ -173,9 +173,9 @@ struct ServiceMenuBarView: View {
                     }.menuStyle(.borderlessButton).menuIndicator(.hidden).frame(maxWidth: .infinity, alignment: .leading)
                 }
             } else {
-                Text(deviceStore.selectedDevice?.product_name ?? "No device connected").font(.system(size: 15, weight: .black, design: .rounded))
+                Text(LocalizedStringKey(deviceStore.selectedDevice?.product_name ?? "No device connected")).font(.system(size: 15, weight: .black, design: .rounded))
             }
-            Text(deviceStore.selectedDevice?.connectionLabel ?? "Waiting for a supported mouse").font(.system(size: 11, weight: .bold, design: .rounded)).foregroundStyle(.secondary)
+            Text(LocalizedStringKey(deviceStore.selectedDevice?.connectionLabel ?? "Waiting for a supported mouse")).font(.system(size: 11, weight: .bold, design: .rounded)).foregroundStyle(.secondary)
         }.frame(maxWidth: .infinity, alignment: .leading)
     }
 
@@ -240,8 +240,8 @@ struct ServiceMenuBarView: View {
 
     private func dpiSliderTitle(for mode: ServiceMenuBarPresentation.CompactDpiControlMode) -> String {
         switch mode {
-        case .scalar: return "Stage \(editorStore.editableActiveStage) DPI"
-        case .split: return "Stage \(editorStore.editableActiveStage) X/Y DPI"
+        case .scalar: return localizedFormat("Stage %lld DPI", editorStore.editableActiveStage)
+        case .split: return localizedFormat("Stage %lld X/Y DPI", editorStore.editableActiveStage)
         }
     }
 
@@ -285,7 +285,7 @@ struct ServiceMenuBarView: View {
         Button(action: action) {
             HStack(spacing: 10) {
                 Image(systemName: systemImage).font(.system(size: 12, weight: .semibold)).foregroundStyle(.secondary)
-                Text(title).font(.system(size: 12, weight: .bold, design: .rounded))
+                Text(LocalizedStringKey(title)).font(.system(size: 12, weight: .bold, design: .rounded))
                 Spacer()
             }.padding(.horizontal, 10).frame(height: Self.menuActionRowHeight).frame(maxWidth: .infinity, alignment: .leading).background(
                 RoundedRectangle(cornerRadius: 10).fill(Color.primary.opacity(0.04)).overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.primary.opacity(0.08), lineWidth: 1))
@@ -297,7 +297,7 @@ struct ServiceMenuBarView: View {
         Toggle(isOn: isOn) {
             HStack(spacing: 10) {
                 Image(systemName: systemImage).font(.system(size: 12, weight: .semibold)).foregroundStyle(.secondary)
-                Text(title).font(.system(size: 12, weight: .bold, design: .rounded))
+                Text(LocalizedStringKey(title)).font(.system(size: 12, weight: .bold, design: .rounded))
                 Spacer()
             }
         }.toggleStyle(.switch).padding(.horizontal, 10).frame(height: Self.menuActionRowHeight).frame(maxWidth: .infinity, alignment: .leading).background(

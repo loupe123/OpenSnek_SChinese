@@ -1,4 +1,5 @@
 import AppKit
+import OpenSnekCore
 import SwiftUI
 
 /// Stores keyboard binding editor data.
@@ -62,7 +63,7 @@ private struct KeyboardBindingRecorderPopover: View {
         VStack(alignment: .leading, spacing: 12) {
             title
 
-            Text("Current binding: \(currentLabel)").font(.system(size: 12, weight: .medium, design: .rounded)).foregroundStyle(.white.opacity(0.72))
+            Text(localizedFormat("Current binding: %@", currentLabel)).font(.system(size: 12, weight: .medium, design: .rounded)).foregroundStyle(.white.opacity(0.72))
 
             capturePanel
 
@@ -99,7 +100,7 @@ private struct KeyboardBindingRecorderPopover: View {
         VStack(spacing: 6) {
             Text("Press one supported key").font(.system(size: 13, weight: .bold, design: .rounded)).foregroundStyle(.white.opacity(0.86))
 
-            Text(supportsModifierChords ? "Shortcuts can include modifiers." : "Modifiers can be captured on their own.").font(.system(size: 11, weight: .medium, design: .rounded)).foregroundStyle(.white.opacity(0.58))
+            Text(LocalizedStringKey(supportsModifierChords ? "Shortcuts can include modifiers." : "Modifiers can be captured on their own.")).font(.system(size: 11, weight: .medium, design: .rounded)).foregroundStyle(.white.opacity(0.58))
         }
     }
 
@@ -175,7 +176,7 @@ private struct KeyboardBindingSearchableKeyPicker: View {
             HStack(spacing: 8) {
                 Image(systemName: optionSystemImageName(for: option)).font(.system(size: 12, weight: .bold)).foregroundStyle(.white.opacity(0.48)).frame(width: 18).accessibilityHidden(true)
 
-                Text(option.label).font(.system(size: 12, weight: .semibold, design: .rounded)).foregroundStyle(.white.opacity(0.84)).lineLimit(1).truncationMode(.tail)
+                Text(LocalizedStringKey(option.label)).font(.system(size: 12, weight: .semibold, design: .rounded)).foregroundStyle(.white.opacity(0.84)).lineLimit(1).truncationMode(.tail)
 
                 Spacer(minLength: 8)
 
@@ -255,7 +256,7 @@ private struct KeyboardBindingSearchField: View {
 
     private var searchIcon: some View { Image(systemName: "magnifyingglass").font(.system(size: 12, weight: .bold)).foregroundStyle(.white.opacity(0.52)).accessibilityHidden(true) }
 
-    private var searchTextField: some View { TextField(prompt, text: $searchText).textFieldStyle(.plain).font(.system(size: 12, weight: .medium, design: .rounded)).foregroundStyle(.white.opacity(0.88)).accessibilityIdentifier("keyboard-binding-key-search") }
+    private var searchTextField: some View { TextField(LocalizedStringKey(prompt), text: $searchText).textFieldStyle(.plain).font(.system(size: 12, weight: .medium, design: .rounded)).foregroundStyle(.white.opacity(0.88)).accessibilityIdentifier("keyboard-binding-key-search") }
 
     private var clearButton: some View {
         Button {

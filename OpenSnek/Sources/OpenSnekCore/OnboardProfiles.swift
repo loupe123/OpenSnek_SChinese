@@ -127,8 +127,8 @@ public struct OnboardProfileSummary: Codable, Identifiable, Hashable, Sendable {
 
     public var displayName: String {
         if let name = metadata?.name, !name.isEmpty { return name }
-        if isBaseProfile { return "Base Profile" }
-        return "Profile \(profileID)"
+        if isBaseProfile { return localized("Base Profile") }
+        return localizedFormat("Profile %lld", profileID)
     }
 }
 

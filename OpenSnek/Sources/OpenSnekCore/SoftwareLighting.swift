@@ -18,13 +18,13 @@ public enum SoftwareLightingPresetID: String, CaseIterable, Codable, Hashable, I
 
     public var label: String {
         switch self {
-        case .flame: return "Flame"
-        case .scrollingRainbow: return "Scrolling Rainbow"
-        case .cometChase: return "Comet Chase"
-        case .nightRider: return "Night Rider"
-        case .aurora: return "Aurora"
-        case .jellybeans: return "Jellybeans"
-        case .batteryMeter: return "Battery Meter"
+        case .flame: return localized("Flame")
+        case .scrollingRainbow: return localized("Scrolling Rainbow")
+        case .cometChase: return localized("Comet Chase")
+        case .nightRider: return localized("Night Rider")
+        case .aurora: return localized("Aurora")
+        case .jellybeans: return localized("Jellybeans")
+        case .batteryMeter: return localized("Battery Meter")
         }
     }
 

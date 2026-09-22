@@ -115,7 +115,7 @@ struct LightingCard: View {
     private var advancedStatusText: String? {
         guard let status = softwareLightingStatus else { return nil }
         switch status.state {
-        case .running: return "Running \(status.request?.presetID.label ?? "effect")"
+        case .running: return localizedFormat("Running %@", status.request?.presetID.label ?? localized("effect"))
         case .suspended, .failed: return status.message
         case .stopped: return nil
         }
@@ -305,7 +305,7 @@ struct LightingCard: View {
 
     private func lightingSummaryRow() -> some View {
         HStack(alignment: .center, spacing: 12) {
-            VStack(alignment: .leading, spacing: 5) { Text(lightingSummaryTitle).font(.system(size: 14, weight: .bold, design: .rounded)).foregroundStyle(.white.opacity(0.88)).lineLimit(1).accessibilityIdentifier("lighting-card-summary-text") }
+            VStack(alignment: .leading, spacing: 5) { Text(LocalizedStringKey(lightingSummaryTitle)).font(.system(size: 14, weight: .bold, design: .rounded)).foregroundStyle(.white.opacity(0.88)).lineLimit(1).accessibilityIdentifier("lighting-card-summary-text") }
 
             Spacer(minLength: 10)
 
@@ -351,7 +351,9 @@ struct LightingCard: View {
                         onReset: { editorStore.resetEditableSoftwareLightingPalette(for: editorStore.editableSoftwareLightingPreset) })
                 }
 
-                if let advancedStatusText { Text(advancedStatusText).font(.system(size: 11, weight: .semibold, design: .rounded)).foregroundStyle(.white.opacity(0.58)).lineLimit(2).fixedSize(horizontal: false, vertical: true).accessibilityIdentifier("software-lighting-status-text") }
+                if let advancedStatusText {
+                    Text(LocalizedStringKey(advancedStatusText)).font(.system(size: 11, weight: .semibold, design: .rounded)).foregroundStyle(.white.opacity(0.58)).lineLimit(2).fixedSize(horizontal: false, vertical: true).accessibilityIdentifier("software-lighting-status-text")
+                }
 
                 softwareLightingActionRow()
             }
@@ -389,7 +391,7 @@ struct LightingCard: View {
         HStack(spacing: 8) {
             Image(systemName: systemImage).font(.system(size: 15, weight: .semibold)).foregroundStyle(iconColor)
 
-            Text(text).font(.system(size: 12, weight: .semibold, design: .rounded)).foregroundStyle(.white.opacity(0.68)).fixedSize(horizontal: false, vertical: true)
+            Text(LocalizedStringKey(text)).font(.system(size: 12, weight: .semibold, design: .rounded)).foregroundStyle(.white.opacity(0.68)).fixedSize(horizontal: false, vertical: true)
         }
     }
 
@@ -398,7 +400,7 @@ struct LightingCard: View {
             HStack {
                 Text("Speed").font(.system(size: 13, weight: .bold, design: .rounded)).foregroundStyle(.white.opacity(0.82))
                 Spacer()
-                Text(editorStore.editableSoftwareLightingSpeed <= 0.001 ? "Static" : "\(Int(round(editorStore.editableSoftwareLightingSpeed * 100)))%").font(.system(size: 13, weight: .black, design: .monospaced)).foregroundStyle(.white)
+                Text(editorStore.editableSoftwareLightingSpeed <= 0.001 ? localized("Static") : "\(Int(round(editorStore.editableSoftwareLightingSpeed * 100)))%").font(.system(size: 13, weight: .black, design: .monospaced)).foregroundStyle(.white)
             }
 
             Slider(value: Binding(get: { editorStore.editableSoftwareLightingSpeed * 100.0 }, set: { editorStore.editableSoftwareLightingSpeed = max(0.0, min(2.0, $0 / 100.0)) }), in: 0...200).tint(.white).accessibilityIdentifier("software-lighting-speed-slider")
@@ -427,8 +429,8 @@ private enum LightingCardTab: String, CaseIterable, Identifiable {
 
     var label: String {
         switch self {
-        case .onboard: return "Onboard"
-        case .advanced: return "Advanced"
+        case .onboard: return localized("Onboard")
+        case .advanced: return localized("Advanced")
         }
     }
 }
@@ -448,7 +450,7 @@ struct LightingSummaryPresentation: Equatable {
             return LightingSummaryPresentation(title: preset.label, swatches: condensedSwatches(from: palette, fallback: input.fallbackColor), batteryIcon: nil)
         }
 
-        return LightingSummaryPresentation(title: "Onboard \(input.onboardEffectLabel)", swatches: condensedSwatches(from: input.onboardColors, fallback: input.fallbackColor), batteryIcon: nil)
+        return LightingSummaryPresentation(title: localizedFormat("Onboard %@", input.onboardEffectLabel), swatches: condensedSwatches(from: input.onboardColors, fallback: input.fallbackColor), batteryIcon: nil)
     }
 
     private static func batteryIcon(for state: MouseState?) -> BatteryIconPresentation {
@@ -488,8 +490,8 @@ private enum LightingZoneEditMode: String, CaseIterable, Identifiable {
 
     var label: String {
         switch self {
-        case .allZones: return "All Zones"
-        case .individualZones: return "Individual Zones"
+        case .allZones: return localized("All Zones")
+        case .individualZones: return localized("Individual Zones")
         }
     }
 }

@@ -189,10 +189,10 @@ struct HIDAccessStatus: Codable, Equatable, Sendable {
 
     var diagnosticsLabel: String {
         switch authorization {
-        case .unknown: return "Checking"
-        case .granted: return "Granted"
-        case .denied: return "Denied"
-        case .unavailable: return "Unavailable"
+        case .unknown: return localized("Checking")
+        case .granted: return localized("Granted")
+        case .denied: return localized("Denied")
+        case .unavailable: return localized("Unavailable")
         }
     }
 }

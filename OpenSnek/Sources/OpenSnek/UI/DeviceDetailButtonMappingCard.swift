@@ -54,7 +54,7 @@ struct ButtonMappingTableCard: View {
 private struct ButtonGroupHeader: View {
     let title: String
 
-    var body: some View { Text(title.uppercased()).font(.system(size: 11, weight: .black, design: .rounded)).foregroundStyle(.white.opacity(0.42)).tracking(0.6).padding(.top, 4).accessibilityAddTraits(.isHeader) }
+    var body: some View { Text(localized(title).uppercased()).font(.system(size: 11, weight: .black, design: .rounded)).foregroundStyle(.white.opacity(0.42)).tracking(0.6).padding(.top, 4).accessibilityAddTraits(.isHeader) }
 }
 
 /// Renders the onboard profile pill button UI.
@@ -74,8 +74,8 @@ struct OnboardProfilePillButton: View {
 
     private var profileName: String {
         if let activeSummary { return activeSummary.displayName }
-        if activeProfileID == 1 { return "Base Profile" }
-        return "Profile \(activeProfileID)"
+        if activeProfileID == 1 { return localized("Base Profile") }
+        return localizedFormat("Profile %lld", activeProfileID)
     }
 
     var body: some View {
@@ -103,7 +103,7 @@ private struct OnboardProfilePillLabel: View {
 
     @ViewBuilder private var leadingIndicator: some View { if isLoading { ProgressView().controlSize(.small).scaleEffect(0.62).frame(width: 9, height: 9).accessibilityHidden(true) } else { profileDot } }
 
-    private var profileNameText: some View { Text(profileName).font(.system(size: 11, weight: .black, design: .rounded)).foregroundStyle(.white.opacity(0.92)).lineLimit(1).truncationMode(.tail).frame(maxWidth: 128, alignment: .leading) }
+    private var profileNameText: some View { Text(LocalizedStringKey(profileName)).font(.system(size: 11, weight: .black, design: .rounded)).foregroundStyle(.white.opacity(0.92)).lineLimit(1).truncationMode(.tail).frame(maxWidth: 128, alignment: .leading) }
 
     private var chevron: some View { Image(systemName: "chevron.down").font(.system(size: 9, weight: .black)).foregroundStyle(.white.opacity(0.54)).accessibilityHidden(true) }
 
@@ -395,8 +395,8 @@ private struct OnboardProfileSlotRowButton: View {
             RoundedRectangle(cornerRadius: 2).fill(style.slotColor.opacity(profile.isAssigned || style.isSelected ? 0.95 : 0.45)).frame(width: 4, height: 30)
 
             VStack(alignment: .leading, spacing: 4) {
-                Text(profile.isAssigned ? profile.displayName : "None").font(.system(size: 12, weight: .semibold, design: .rounded)).foregroundStyle(Color.white.opacity(style.titleOpacity)).lineLimit(1)
-                Text(profile.profileID == 1 ? "Base" : "Slot \(profile.profileID)").font(.system(size: 10, weight: .medium, design: .rounded)).foregroundStyle(.white.opacity(style.subtitleOpacity))
+                Text(LocalizedStringKey(profile.isAssigned ? profile.displayName : "None")).font(.system(size: 12, weight: .semibold, design: .rounded)).foregroundStyle(Color.white.opacity(style.titleOpacity)).lineLimit(1)
+                Text(profile.profileID == 1 ? localized("Base") : localizedFormat("Slot %lld", profile.profileID)).font(.system(size: 10, weight: .medium, design: .rounded)).foregroundStyle(.white.opacity(style.subtitleOpacity))
             }.frame(maxWidth: .infinity, alignment: .leading)
 
             Spacer(minLength: 0)
@@ -479,7 +479,7 @@ private struct UnsupportedButtonsFootnote: View {
 private struct UnsupportedButtonFootnoteRow: View {
     let entry: DocumentedButtonSlot
 
-    var body: some View { Text("\(entry.descriptor.friendlyName): \(entry.note ?? entry.access.defaultNotice ?? "Unsupported")").font(.system(size: 11, weight: .medium, design: .rounded)).foregroundStyle(.white.opacity(0.62)).fixedSize(horizontal: false, vertical: true) }
+    var body: some View { Text("\(localized(entry.descriptor.friendlyName)): \(localized(entry.note ?? entry.access.defaultNotice ?? "Unsupported"))").font(.system(size: 11, weight: .medium, design: .rounded)).foregroundStyle(.white.opacity(0.62)).fixedSize(horizontal: false, vertical: true) }
 }
 
 /// Renders the labeled control row UI.
@@ -489,7 +489,7 @@ struct LabeledControlRow<Control: View>: View {
 
     var body: some View {
         HStack(alignment: .center, spacing: 12) {
-            Text(title).font(.system(size: 13, weight: .bold, design: .rounded)).foregroundStyle(.white.opacity(0.82))
+            Text(LocalizedStringKey(title)).font(.system(size: 13, weight: .bold, design: .rounded)).foregroundStyle(.white.opacity(0.82))
 
             Spacer(minLength: 12)
 
@@ -551,7 +551,7 @@ private struct ButtonBindingHeaderRow: View {
 
     var body: some View {
         HStack(alignment: .center, spacing: 12) {
-            Text(row.friendlyName).font(.system(size: 13, weight: .bold, design: .rounded)).foregroundStyle(.white).accessibilityIdentifier("button-binding-row-\(row.slot)")
+            Text(LocalizedStringKey(row.friendlyName)).font(.system(size: 13, weight: .bold, design: .rounded)).foregroundStyle(.white).accessibilityIdentifier("button-binding-row-\(row.slot)")
 
             Spacer(minLength: 12)
 
@@ -676,7 +676,7 @@ private struct ButtonBindingNoticeRow: View {
     var body: some View {
         HStack {
             Spacer()
-            Text(notice).font(.system(size: 11, weight: .medium, design: .rounded)).foregroundStyle(.white.opacity(0.58))
+            Text(LocalizedStringKey(notice)).font(.system(size: 11, weight: .medium, design: .rounded)).foregroundStyle(.white.opacity(0.58))
         }
     }
 }

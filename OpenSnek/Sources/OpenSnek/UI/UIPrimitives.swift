@@ -12,7 +12,7 @@ struct Pill: View {
     var verticalPadding: CGFloat = 5
 
     var body: some View {
-        Text(text).font(.system(size: fontSize, weight: .bold, design: .rounded)).foregroundStyle(Color.black.opacity(0.78)).padding(.horizontal, horizontalPadding).padding(.vertical, verticalPadding).background(color, in: Capsule()).contentShape(Capsule()).hoverTooltip(
+        Text(LocalizedStringKey(text)).font(.system(size: fontSize, weight: .bold, design: .rounded)).foregroundStyle(Color.black.opacity(0.78)).padding(.horizontal, horizontalPadding).padding(.vertical, verticalPadding).background(color, in: Capsule()).contentShape(Capsule()).hoverTooltip(
             helpText, xOffset: 6, yOffset: fontSize + (verticalPadding * 2) + 10, maxWidth: 360)
     }
 }
@@ -31,7 +31,7 @@ struct Card<Content: View>: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text(title).font(.system(size: 17, weight: .black, design: .rounded)).foregroundStyle(.white).optionalAccessibilityIdentifier(accessibilityIdentifier)
+            Text(LocalizedStringKey(title)).font(.system(size: 17, weight: .black, design: .rounded)).foregroundStyle(.white).optionalAccessibilityIdentifier(accessibilityIdentifier)
             content()
         }.frame(maxWidth: .infinity, alignment: .leading).padding(14).background(RoundedRectangle(cornerRadius: 14).fill(Color.white.opacity(0.07)).overlay(RoundedRectangle(cornerRadius: 14).stroke(Color.white.opacity(0.18), lineWidth: 1))).contentShape(RoundedRectangle(cornerRadius: 14))
     }
@@ -108,7 +108,7 @@ private struct LoadingScrimOverlay: View {
     private var loadingBadge: some View {
         HStack(spacing: 10) {
             ProgressView().controlSize(.small).tint(.white.opacity(0.90))
-            Text(label).font(.system(size: 12, weight: .bold, design: .rounded)).foregroundStyle(.white.opacity(0.82))
+            Text(LocalizedStringKey(label)).font(.system(size: 12, weight: .bold, design: .rounded)).foregroundStyle(.white.opacity(0.82))
         }.padding(.horizontal, 14).padding(.vertical, 10).background(Capsule().fill(Color.white.opacity(0.11)).overlay(Capsule().stroke(Color.white.opacity(0.18), lineWidth: 1)))
     }
 }
@@ -140,9 +140,10 @@ private struct HoverTooltipBubble: View {
     let maxWidth: CGFloat
 
     var body: some View {
-        Text(text).font(.system(size: 11, weight: .semibold, design: .rounded)).foregroundStyle(.white.opacity(0.92)).lineSpacing(2).multilineTextAlignment(.leading).frame(minWidth: 220, idealWidth: min(320, maxWidth), maxWidth: maxWidth, alignment: .leading).padding(.horizontal, 12).padding(
-            .vertical, 9
-        ).background(RoundedRectangle(cornerRadius: 10).fill(Color.black.opacity(0.86)).overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.white.opacity(0.14), lineWidth: 1)).shadow(color: .black.opacity(0.24), radius: 14, y: 6)).fixedSize(horizontal: false, vertical: true)
+        Text(LocalizedStringKey(text)).font(.system(size: 11, weight: .semibold, design: .rounded)).foregroundStyle(.white.opacity(0.92)).lineSpacing(2).multilineTextAlignment(.leading).frame(minWidth: 220, idealWidth: min(320, maxWidth), maxWidth: maxWidth, alignment: .leading).padding(
+            .horizontal, 12
+        ).padding(.vertical, 9).background(RoundedRectangle(cornerRadius: 10).fill(Color.black.opacity(0.86)).overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.white.opacity(0.14), lineWidth: 1)).shadow(color: .black.opacity(0.24), radius: 14, y: 6)).fixedSize(
+            horizontal: false, vertical: true)
     }
 }
 
