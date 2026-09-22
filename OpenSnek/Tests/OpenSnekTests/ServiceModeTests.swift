@@ -379,7 +379,7 @@ private actor ServiceModeTransportBackend: DeviceBackend {
 
     func readLightingColor(device _: MouseDevice) async throws -> RGBPatch? { nil }
 
-    func debugUSBReadButtonBinding(device _: MouseDevice, slot _: Int, profile _: Int) async throws -> [UInt8]? { nil }
+    func debugUSBReadButtonBinding(device _: MouseDevice, slot _: Int, profile _: Int, hypershift _: Int) async throws -> [UInt8]? { nil }
 }
 
 /// Provides a HID access refresh recording backend test double.
@@ -413,7 +413,7 @@ private actor HIDAccessRefreshRecordingBackend: HIDAccessRefreshControllingBacke
 
     func readLightingColor(device _: MouseDevice) async throws -> RGBPatch? { nil }
 
-    func debugUSBReadButtonBinding(device _: MouseDevice, slot _: Int, profile _: Int) async throws -> [UInt8]? { nil }
+    func debugUSBReadButtonBinding(device _: MouseDevice, slot _: Int, profile _: Int, hypershift _: Int) async throws -> [UInt8]? { nil }
 
     func recordedForceRefreshes() -> [Bool] { requestedForceRefreshes }
 }
@@ -457,7 +457,7 @@ private actor SequencedServiceModeTransportBackend: DeviceBackend {
 
     func readLightingColor(device _: MouseDevice) async throws -> RGBPatch? { nil }
 
-    func debugUSBReadButtonBinding(device _: MouseDevice, slot _: Int, profile _: Int) async throws -> [UInt8]? { nil }
+    func debugUSBReadButtonBinding(device _: MouseDevice, slot _: Int, profile _: Int, hypershift _: Int) async throws -> [UInt8]? { nil }
 
     func readStateCountValue() -> Int { readStateCount }
 }

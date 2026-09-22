@@ -73,7 +73,7 @@ actor SnapshotSoftwareLightingRemoteBackend: DeviceBackend {
         return status
     }
     func softwareLightingStatus(deviceID: String) async -> SoftwareLightingEngineStatus? { softwareLightingStatusByDeviceID[deviceID] }
-    func debugUSBReadButtonBinding(device _: MouseDevice, slot _: Int, profile _: Int) async throws -> [UInt8]? { nil }
+    func debugUSBReadButtonBinding(device _: MouseDevice, slot _: Int, profile _: Int, hypershift _: Int) async throws -> [UInt8]? { nil }
 
     func softwareLightingStartCount(for deviceID: String) -> Int { softwareLightingStartsByDeviceID[deviceID, default: 0] }
 
@@ -102,7 +102,7 @@ final class SnapshotTestRemoteBackend: DeviceBackend {
     func stateUpdates() async -> AsyncStream<BackendStateUpdate> { AsyncStream { continuation in continuation.finish() } }
     func apply(device _: MouseDevice, patch _: DevicePatch) async throws -> MouseState { throw SnapshotBackendError.unimplemented }
     func readLightingColor(device _: MouseDevice) async throws -> RGBPatch? { nil }
-    func debugUSBReadButtonBinding(device _: MouseDevice, slot _: Int, profile _: Int) async throws -> [UInt8]? { nil }
+    func debugUSBReadButtonBinding(device _: MouseDevice, slot _: Int, profile _: Int, hypershift _: Int) async throws -> [UInt8]? { nil }
 }
 
 /// Stores snapshot diagnostic counter test data.
@@ -126,7 +126,7 @@ final class SnapshotUnavailableRemoteBackend: DeviceBackend {
     func stateUpdates() async -> AsyncStream<BackendStateUpdate> { AsyncStream { continuation in continuation.finish() } }
     func apply(device _: MouseDevice, patch _: DevicePatch) async throws -> MouseState { throw SnapshotBackendError.unimplemented }
     func readLightingColor(device _: MouseDevice) async throws -> RGBPatch? { nil }
-    func debugUSBReadButtonBinding(device _: MouseDevice, slot _: Int, profile _: Int) async throws -> [UInt8]? { nil }
+    func debugUSBReadButtonBinding(device _: MouseDevice, slot _: Int, profile _: Int, hypershift _: Int) async throws -> [UInt8]? { nil }
 }
 
 /// Stores snapshot readback remote backend test data.
@@ -152,7 +152,7 @@ actor SnapshotReadbackRemoteBackend: DeviceBackend {
     func stateUpdates() async -> AsyncStream<BackendStateUpdate> { AsyncStream { continuation in continuation.finish() } }
     func apply(device _: MouseDevice, patch _: DevicePatch) async throws -> MouseState { throw SnapshotBackendError.unimplemented }
     func readLightingColor(device _: MouseDevice) async throws -> RGBPatch? { nil }
-    func debugUSBReadButtonBinding(device _: MouseDevice, slot _: Int, profile _: Int) async throws -> [UInt8]? { nil }
+    func debugUSBReadButtonBinding(device _: MouseDevice, slot _: Int, profile _: Int, hypershift _: Int) async throws -> [UInt8]? { nil }
 
     func readCount(for deviceID: String) -> Int { readCountsByDeviceID[deviceID] ?? 0 }
 }
@@ -181,7 +181,7 @@ actor SnapshotRecordingRemoteBackend: DeviceBackend {
         return state
     }
     func readLightingColor(device _: MouseDevice) async throws -> RGBPatch? { nil }
-    func debugUSBReadButtonBinding(device _: MouseDevice, slot _: Int, profile _: Int) async throws -> [UInt8]? { nil }
+    func debugUSBReadButtonBinding(device _: MouseDevice, slot _: Int, profile _: Int, hypershift _: Int) async throws -> [UInt8]? { nil }
 
     func applyCount() -> Int { applies.count }
 }
@@ -215,7 +215,7 @@ actor RemoteBootstrapServiceBackend: DeviceBackend {
     func emit(_ update: BackendStateUpdate) { stateUpdatesContinuation.yield(update) }
     func apply(device _: MouseDevice, patch _: DevicePatch) async throws -> MouseState { state }
     func readLightingColor(device _: MouseDevice) async throws -> RGBPatch? { RGBPatch(r: 12, g: 34, b: 56) }
-    func debugUSBReadButtonBinding(device _: MouseDevice, slot _: Int, profile _: Int) async throws -> [UInt8]? { nil }
+    func debugUSBReadButtonBinding(device _: MouseDevice, slot _: Int, profile _: Int, hypershift _: Int) async throws -> [UInt8]? { nil }
 }
 
 /// Defines snapshot backend error test values.

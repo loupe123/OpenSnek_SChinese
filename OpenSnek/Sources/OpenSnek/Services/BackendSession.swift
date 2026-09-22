@@ -44,7 +44,7 @@ protocol DeviceBackend: AnyObject, Sendable {
     func stopSoftwareLighting(device: MouseDevice) async -> SoftwareLightingEngineStatus?
     func stopAllSoftwareLighting() async -> [SoftwareLightingEngineStatus]
     func softwareLightingStatus(deviceID: String) async -> SoftwareLightingEngineStatus?
-    func debugUSBReadButtonBinding(device: MouseDevice, slot: Int, profile: Int) async throws -> [UInt8]?
+    func debugUSBReadButtonBinding(device: MouseDevice, slot: Int, profile: Int, hypershift: Int) async throws -> [UInt8]?
 }
 
 /// Defines the HID access refresh controlling backend contract.
@@ -111,7 +111,7 @@ final actor BootstrapPendingBackend: DeviceBackend {
 
     func softwareLightingStatus(deviceID _: String) async -> SoftwareLightingEngineStatus? { nil }
 
-    func debugUSBReadButtonBinding(device _: MouseDevice, slot _: Int, profile _: Int) async throws -> [UInt8]? { nil }
+    func debugUSBReadButtonBinding(device _: MouseDevice, slot _: Int, profile _: Int, hypershift _: Int) async throws -> [UInt8]? { nil }
 }
 
 /// Adds scoped helpers for `DeviceBackend`.

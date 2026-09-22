@@ -151,7 +151,7 @@ actor AppStateRefactorStubBackend: DeviceBackend, ApplyOptionsSupportingBackend 
 
     func readLightingColor(device _: MouseDevice) async throws -> RGBPatch? { nil }
 
-    func debugUSBReadButtonBinding(device: MouseDevice, slot: Int, profile: Int) async throws -> [UInt8]? {
+    func debugUSBReadButtonBinding(device: MouseDevice, slot: Int, profile: Int, hypershift _: Int) async throws -> [UInt8]? {
         buttonReadCountByDeviceID[device.id, default: 0] += 1
         let key = buttonKey(deviceID: device.id, slot: slot, profile: profile)
         if heldButtonReadKeys.contains(key) {

@@ -278,7 +278,7 @@ import OpenSnekCore
         bumpUSBButtonProfilesRevision()
     }
 
-    func buttonBindingsHydrationKey(device: MouseDevice, profile: Int) -> String { "\(device.id)#\(max(1, profile))" }
+    func buttonBindingsHydrationKey(device: MouseDevice, profile: Int, layer: ButtonBindingLayer? = nil) -> String { "\(device.id)#\(max(1, profile))#\((layer ?? editorStore.editableButtonLayer).rawValue)" }
 
     func editableButtonBindingsHydrationKey(device: MouseDevice) -> String {
         let profile = supportsOnboardProfileCRUD(device: device) ? selectedOnboardProfileIDByDeviceID[device.id] ?? editorStore.editableUSBButtonProfile : editorStore.editableUSBButtonProfile

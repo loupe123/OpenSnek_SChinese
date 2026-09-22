@@ -65,7 +65,18 @@ import OpenSnekCore
     var editableLightingReactiveSpeed = 2
     var editableColor = RGBColor(r: 0, g: 255, b: 0)
     var editableSecondaryColor = RGBColor(r: 0, g: 170, b: 255)
-    var editableButtonBindings: [Int: ButtonBindingDraft] = [:]
+    /// The button-binding layer the editor is currently editing.
+    var editableButtonLayer: ButtonBindingLayer = .normal
+    /// Bindings held separately per layer so switching layers never mixes drafts.
+    var editableButtonBindingsByLayer: [ButtonBindingLayer: [Int: ButtonBindingDraft]] = [:]
+    /// Bindings for `editableButtonLayer`.
+    ///
+    /// Keeping the slot-keyed shape means every existing call site keeps working unchanged
+    /// while the active layer decides which drafts it actually reads and writes.
+    var editableButtonBindings: [Int: ButtonBindingDraft] {
+        get { editableButtonBindingsByLayer[editableButtonLayer] ?? [:] }
+        set { editableButtonBindingsByLayer[editableButtonLayer] = newValue }
+    }
     var lightingGradientRevision: UInt64 = 0
     var isEditingDpiControl = false
     var isButtonProfileOperationInFlight = false
@@ -360,6 +371,15 @@ import OpenSnekCore
     }
 
     func refreshButtonProfilePresentation() { editorController.refreshButtonProfilePresentation() }
+
+    /// Reloads the button workspace for the currently selected layer.
+    ///
+    /// The hydration key includes the layer, so switching layers routes the next hydration pass at
+    /// the newly selected layer instead of reusing the other layer's cached bindings.
+    func refreshButtonBindingsForActiveLayer() async {
+        guard let selectedDevice = deviceStore.selectedDevice else { return }
+        await editorController.hydrateButtonBindingsIfNeeded(device: selectedDevice)
+    }
 
     func refreshOnboardProfiles() async {
         if !supportsOnboardProfileCRUD {

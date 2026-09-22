@@ -63,7 +63,7 @@ actor PassiveUpdateStubBackend: DeviceBackend {
 
     func readLightingColor(device _: MouseDevice) async throws -> RGBPatch? { nil }
 
-    func debugUSBReadButtonBinding(device _: MouseDevice, slot _: Int, profile _: Int) async throws -> [UInt8]? { nil }
+    func debugUSBReadButtonBinding(device _: MouseDevice, slot _: Int, profile _: Int, hypershift _: Int) async throws -> [UInt8]? { nil }
 
     func emitStateUpdate(deviceID: String, state: MouseState, updatedAt: Date = Date()) {
         stateByDeviceID[deviceID] = state
@@ -126,7 +126,7 @@ actor RacingPassiveUpdateStubBackend: DeviceBackend {
 
     func readLightingColor(device _: MouseDevice) async throws -> RGBPatch? { nil }
 
-    func debugUSBReadButtonBinding(device _: MouseDevice, slot _: Int, profile _: Int) async throws -> [UInt8]? { nil }
+    func debugUSBReadButtonBinding(device _: MouseDevice, slot _: Int, profile _: Int, hypershift _: Int) async throws -> [UInt8]? { nil }
 
     func waitForReadStateStart() async {
         if readStateStarted { return }

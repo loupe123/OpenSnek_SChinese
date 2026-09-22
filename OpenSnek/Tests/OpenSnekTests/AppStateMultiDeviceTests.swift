@@ -40,7 +40,7 @@ actor MultiDeviceStubBackend: DeviceBackend {
 
     func readLightingColor(device _: MouseDevice) async throws -> RGBPatch? { nil }
 
-    func debugUSBReadButtonBinding(device _: MouseDevice, slot _: Int, profile _: Int) async throws -> [UInt8]? { nil }
+    func debugUSBReadButtonBinding(device _: MouseDevice, slot _: Int, profile _: Int, hypershift _: Int) async throws -> [UInt8]? { nil }
 
     func recordedReadOrder() -> [String] { readOrder }
 
@@ -92,7 +92,7 @@ actor PartiallyFailingMultiDeviceStubBackend: DeviceBackend {
 
     func readLightingColor(device _: MouseDevice) async throws -> RGBPatch? { nil }
 
-    func debugUSBReadButtonBinding(device _: MouseDevice, slot _: Int, profile _: Int) async throws -> [UInt8]? { nil }
+    func debugUSBReadButtonBinding(device _: MouseDevice, slot _: Int, profile _: Int, hypershift _: Int) async throws -> [UInt8]? { nil }
 
     func recordedReadOrder() -> [String] { readOrder }
 }
@@ -130,7 +130,7 @@ actor DisconnectingMultiDeviceStubBackend: DeviceBackend {
 
     func readLightingColor(device _: MouseDevice) async throws -> RGBPatch? { nil }
 
-    func debugUSBReadButtonBinding(device _: MouseDevice, slot _: Int, profile _: Int) async throws -> [UInt8]? { nil }
+    func debugUSBReadButtonBinding(device _: MouseDevice, slot _: Int, profile _: Int, hypershift _: Int) async throws -> [UInt8]? { nil }
 
     func setUnavailable(_ unavailable: Bool) { self.unavailable = unavailable }
 }
@@ -202,7 +202,7 @@ actor DeviceListUpdatingStubBackend: DeviceBackend {
 
     func readLightingColor(device _: MouseDevice) async throws -> RGBPatch? { nil }
 
-    func debugUSBReadButtonBinding(device _: MouseDevice, slot _: Int, profile _: Int) async throws -> [UInt8]? { nil }
+    func debugUSBReadButtonBinding(device _: MouseDevice, slot _: Int, profile _: Int, hypershift _: Int) async throws -> [UInt8]? { nil }
 
     func setState(_ state: MouseState, for deviceID: String) { stateByDeviceID[deviceID] = state }
 

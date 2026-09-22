@@ -29,6 +29,7 @@ struct ButtonBindingReadRequest: Codable, Sendable {
     let device: MouseDevice
     let slot: Int
     let profile: Int
+    let hypershift: Int
 }
 
 /// Carries software lighting start request data.

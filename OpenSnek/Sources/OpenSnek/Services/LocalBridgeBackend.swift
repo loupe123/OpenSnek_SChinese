@@ -398,7 +398,7 @@ final actor LocalBridgeBackend: HIDAccessRefreshControllingBackend, ApplyOptions
 
     func softwareLightingStatus(deviceID: String) async -> SoftwareLightingEngineStatus? { await softwareLightingEngine.status(deviceID: deviceID) }
 
-    func debugUSBReadButtonBinding(device: MouseDevice, slot: Int, profile: Int) async throws -> [UInt8]? { try await client.debugUSBReadButtonBinding(device: device, slot: slot, profile: profile) }
+    func debugUSBReadButtonBinding(device: MouseDevice, slot: Int, profile: Int, hypershift: Int) async throws -> [UInt8]? { try await client.debugUSBReadButtonBinding(device: device, slot: slot, profile: profile, hypershift: hypershift) }
 
     private func handleDevicePresenceEvent(_ event: HIDDevicePresenceEvent) {
         if event.transport == .usb {

@@ -31,8 +31,8 @@ final class HardwareUSBStartupHydrationTests: XCTestCase {
         guard let usb = devices.first(where: { $0.transport != .bluetooth }) else { throw XCTSkip("No USB device found for startup hydration test.") }
 
         let slot = 4  // Back button
-        let defaultProfileBlock = try await client.debugUSBReadButtonBinding(device: usb, slot: slot, profile: 0x01)
-        let directProfileBlock = try await client.debugUSBReadButtonBinding(device: usb, slot: slot, profile: 0x00)
+        let defaultProfileBlock = try await client.debugUSBReadButtonBinding(device: usb, slot: slot, profile: 0x01, hypershift: 0)
+        let directProfileBlock = try await client.debugUSBReadButtonBinding(device: usb, slot: slot, profile: 0x00, hypershift: 0)
         guard defaultProfileBlock != nil || directProfileBlock != nil else { throw XCTSkip("USB button readback unavailable on this device/handle.") }
 
         let restoreOriginal: () async -> Void = {

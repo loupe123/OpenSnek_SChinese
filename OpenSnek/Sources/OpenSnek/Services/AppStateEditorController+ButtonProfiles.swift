@@ -147,13 +147,14 @@ import OpenSnekCore
         var readAnyBlock = false
         let persistentProfile = max(1, min(editorStore.visibleOnboardProfileCount, profile))
         let shouldReadDirect = !editorStore.supportsMultipleOnboardProfiles || persistentProfile == liveUSBButtonProfile(for: device)
+        let hypershift = Int(editorStore.editableButtonLayer.usbHypershiftFlag)
 
         for slot in slots {
             guard !Task.isCancelled else { return nil }
             do {
-                let persistentBlock = try await environment.backend.debugUSBReadButtonBinding(device: device, slot: slot, profile: persistentProfile)
+                let persistentBlock = try await environment.backend.debugUSBReadButtonBinding(device: device, slot: slot, profile: persistentProfile, hypershift: hypershift)
                 guard !isTearingDown, !Task.isCancelled else { return nil }
-                let directBlock = shouldReadDirect ? try await environment.backend.debugUSBReadButtonBinding(device: device, slot: slot, profile: 0x00) : nil
+                let directBlock = shouldReadDirect ? try await environment.backend.debugUSBReadButtonBinding(device: device, slot: slot, profile: 0x00, hypershift: hypershift) : nil
                 guard !isTearingDown, !Task.isCancelled else { return nil }
                 let block = directBlock ?? persistentBlock
                 if let block {
@@ -173,7 +174,7 @@ import OpenSnekCore
     }
 
     func cachePersistedButtonBinding(_ binding: ButtonBindingPatch, device: MouseDevice, profile: Int) {
-        let hydrationKey = buttonBindingsHydrationKey(device: device, profile: profile)
+        let hydrationKey = buttonBindingsHydrationKey(device: device, profile: profile, layer: binding.layer)
         let updatedDraft = ButtonBindingSupport.normalizedDefaultRepresentation(
             for: binding.slot,
             draft: ButtonBindingDraft(

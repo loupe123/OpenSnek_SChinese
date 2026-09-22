@@ -37,6 +37,8 @@ struct ButtonMappingTableCard: View {
     var body: some View {
         Card(title: title, accessibilityIdentifier: "button-mapping-card") {
             VStack(alignment: .leading, spacing: 12) {
+                ButtonLayerPicker(editorStore: editorStore)
+
                 LazyVStack(alignment: .leading, spacing: 10) {
                     ForEach(rowsWithGroupHeaders, id: \.row.id) { entry in
                         if let header = entry.header { ButtonGroupHeader(title: header) }
@@ -47,6 +49,23 @@ struct ButtonMappingTableCard: View {
                 if !deviceStore.hiddenUnsupportedButtonSlots.isEmpty { UnsupportedButtonsFootnote(entries: deviceStore.hiddenUnsupportedButtonSlots) }
             }
         }
+    }
+}
+
+/// Renders the button-layer picker that switches the workspace between the normal and Hypershift layers.
+private struct ButtonLayerPicker: View {
+    let editorStore: EditorStore
+
+    private var layerBinding: Binding<ButtonBindingLayer> { Binding(get: { editorStore.editableButtonLayer }, set: { editorStore.editableButtonLayer = $0 }) }
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Text("Layer").font(.system(size: 13, weight: .bold, design: .rounded)).foregroundStyle(.white.opacity(0.82))
+
+            Spacer(minLength: 12)
+
+            Picker("Layer", selection: layerBinding) { ForEach(ButtonBindingLayer.allCases) { layer in Text(layer.label).tag(layer) } }.labelsHidden().pickerStyle(.segmented).frame(width: 260, alignment: .trailing).accessibilityIdentifier("button-layer-picker")
+        }.frame(maxWidth: .infinity, alignment: .leading).task(id: editorStore.editableButtonLayer) { await editorStore.refreshButtonBindingsForActiveLayer() }
     }
 }
 

@@ -47,7 +47,7 @@ final class BackgroundServiceTransportTests: XCTestCase {
         let lighting = try await serviceBackend.readLightingColor(device: devices[0])
         XCTAssertEqual(lighting, RGBPatch(r: 10, g: 20, b: 30))
 
-        let binding = try await serviceBackend.debugUSBReadButtonBinding(device: devices[0], slot: 5, profile: 2)
+        let binding = try await serviceBackend.debugUSBReadButtonBinding(device: devices[0], slot: 5, profile: 2, hypershift: 0)
         XCTAssertEqual(binding, [0xAA, 0x55, 0x05, 0x02])
 
         let softwareLighting = try await serviceBackend.startSoftwareLighting(device: devices[0], request: SoftwareLightingEffectRequest(presetID: .cometChase))
@@ -267,7 +267,7 @@ private actor StubServiceBackend: HIDAccessRefreshControllingBackend {
 
     func readLightingColor(device _: MouseDevice) async throws -> RGBPatch? { RGBPatch(r: 10, g: 20, b: 30) }
 
-    func debugUSBReadButtonBinding(device _: MouseDevice, slot: Int, profile: Int) async throws -> [UInt8]? { [0xAA, 0x55, UInt8(slot & 0xFF), UInt8(profile & 0xFF)] }
+    func debugUSBReadButtonBinding(device _: MouseDevice, slot: Int, profile: Int, hypershift _: Int) async throws -> [UInt8]? { [0xAA, 0x55, UInt8(slot & 0xFF), UInt8(profile & 0xFF)] }
 
     func startSoftwareLighting(device: MouseDevice, request: SoftwareLightingEffectRequest) async throws -> SoftwareLightingEngineStatus {
         let status = SoftwareLightingEngineStatus(deviceID: device.id, state: .running, request: request, updatedAt: Date(timeIntervalSince1970: 1_774_000_100))

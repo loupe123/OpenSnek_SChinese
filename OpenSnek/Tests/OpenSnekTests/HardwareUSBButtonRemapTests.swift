@@ -17,8 +17,8 @@ final class HardwareUSBButtonRemapTests: XCTestCase {
         guard let usb = devices.first(where: { $0.transport != .bluetooth }) else { throw XCTSkip("No USB device found for remap test.") }
 
         let slot = 4  // Back button (safe to temporarily remap for validation)
-        let originalDefaultProfile = try await client.debugUSBReadButtonBinding(device: usb, slot: slot, profile: 0x01)
-        let originalDirectProfile = try await client.debugUSBReadButtonBinding(device: usb, slot: slot, profile: 0x00)
+        let originalDefaultProfile = try await client.debugUSBReadButtonBinding(device: usb, slot: slot, profile: 0x01, hypershift: 0)
+        let originalDirectProfile = try await client.debugUSBReadButtonBinding(device: usb, slot: slot, profile: 0x00, hypershift: 0)
 
         guard originalDefaultProfile != nil || originalDirectProfile != nil else { throw XCTSkip("USB button readback command unavailable on this device/handle.") }
 
@@ -45,8 +45,8 @@ final class HardwareUSBButtonRemapTests: XCTestCase {
         let deadline = Date().addingTimeInterval(timeout)
 
         while Date() < deadline {
-            let profileDefault = try await client.debugUSBReadButtonBinding(device: device, slot: slot, profile: 0x01)
-            let profileDirect = try await client.debugUSBReadButtonBinding(device: device, slot: slot, profile: 0x00)
+            let profileDefault = try await client.debugUSBReadButtonBinding(device: device, slot: slot, profile: 0x01, hypershift: 0)
+            let profileDirect = try await client.debugUSBReadButtonBinding(device: device, slot: slot, profile: 0x00, hypershift: 0)
 
             if profileDefault.map({ isUSBMouseFunction($0, mouseButton: expectedMouseButton) }) == true || profileDirect.map({ isUSBMouseFunction($0, mouseButton: expectedMouseButton) }) == true { return true }
 

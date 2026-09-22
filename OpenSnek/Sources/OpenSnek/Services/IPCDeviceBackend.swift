@@ -105,7 +105,9 @@ final actor IPCDeviceBackend: HIDAccessRefreshControllingBackend, ApplyOptionsSu
 
     func softwareLightingStatus(deviceID: String) async -> SoftwareLightingEngineStatus? { try? await request(method: .softwareLightingStatus, payload: try BackendCodec.encode(SoftwareLightingStatusRequest(deviceID: deviceID)), responseType: SoftwareLightingEngineStatus?.self) }
 
-    func debugUSBReadButtonBinding(device: MouseDevice, slot: Int, profile: Int) async throws -> [UInt8]? { try await request(method: .debugUSBReadButtonBinding, payload: try BackendCodec.encode(ButtonBindingReadRequest(device: device, slot: slot, profile: profile)), responseType: [UInt8]?.self) }
+    func debugUSBReadButtonBinding(device: MouseDevice, slot: Int, profile: Int, hypershift: Int) async throws -> [UInt8]? {
+        try await request(method: .debugUSBReadButtonBinding, payload: try BackendCodec.encode(ButtonBindingReadRequest(device: device, slot: slot, profile: profile, hypershift: hypershift)), responseType: [UInt8]?.self)
+    }
 
     private func request<T: Decodable & Sendable>(method: BackgroundServiceMethod, payload: Data?, responseType: T.Type) async throws -> T {
         let connection = NWConnection(host: host, port: port, using: BackgroundServiceTransport.clientParameters())

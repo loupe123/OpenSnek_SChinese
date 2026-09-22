@@ -7,7 +7,7 @@ import OpenSnekCore
     func makeEditableButtonBindingPatch(slot: Int, persistentProfile: Int, writePersistentLayer: Bool = true, writeDirectLayer: Bool) -> ButtonBindingPatch {
         let resolved = editableButtonBindingDraft(for: slot)
         let profileID = deviceStore.selectedDevice?.profile_id
-        return makeButtonBindingPatch(slot: slot, draft: resolved, profileID: profileID, persistentProfile: persistentProfile, writePersistentLayer: writePersistentLayer, writeDirectLayer: writeDirectLayer)
+        return makeButtonBindingPatch(slot: slot, draft: resolved, profileID: profileID, persistentProfile: persistentProfile, writePersistentLayer: writePersistentLayer, writeDirectLayer: writeDirectLayer, layer: editorStore.editableButtonLayer)
     }
 
     private func editableButtonBindingDraft(for slot: Int) -> ButtonBindingDraft {
@@ -26,7 +26,9 @@ import OpenSnekCore
 
     func applyButtonBinding(slot: Int) async {
         guard let selectedDevice = deviceStore.selectedDevice else { return }
-        if supportsOnboardProfileEditorWrites(device: selectedDevice) {
+        // Onboard profile mutations always address the normal layer, so a Hypershift edit has to go
+        // through the direct button-binding patch path instead.
+        if supportsOnboardProfileEditorWrites(device: selectedDevice), editorStore.editableButtonLayer == .normal {
             let draft = editorStore.editableButtonBindings[slot] ?? editorController.defaultButtonBinding(for: slot)
             _ = await applyOnboardProfileMutationForCurrentSelection(OnboardProfileMutation(buttonBindings: [slot: draft]))
             return

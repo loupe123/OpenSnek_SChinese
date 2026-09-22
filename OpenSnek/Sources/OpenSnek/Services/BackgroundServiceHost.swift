@@ -97,7 +97,7 @@ private actor BackgroundServiceRequestHandler {
             payload = try BackendCodec.encode(await backend.softwareLightingStatus(deviceID: statusRequest.deviceID))
         case .debugUSBReadButtonBinding:
             let bindingRequest = try decodePayload(ButtonBindingReadRequest.self, from: request.payload)
-            payload = try BackendCodec.encode(try await backend.debugUSBReadButtonBinding(device: bindingRequest.device, slot: bindingRequest.slot, profile: bindingRequest.profile))
+            payload = try BackendCodec.encode(try await backend.debugUSBReadButtonBinding(device: bindingRequest.device, slot: bindingRequest.slot, profile: bindingRequest.profile, hypershift: bindingRequest.hypershift))
         case .subscribeStateUpdates: payload = try BackendCodec.encode(true)
         }
 
