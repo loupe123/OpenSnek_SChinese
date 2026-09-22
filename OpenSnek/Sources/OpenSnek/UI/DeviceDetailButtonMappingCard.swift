@@ -48,9 +48,10 @@ struct ButtonMappingTableCard: View {
         let kind = editorStore.buttonBindingKind(for: slot.slot)
         let turboEnabled = editorStore.buttonBindingTurboEnabled(for: slot.slot)
         let turboRate = editorStore.buttonBindingTurboRatePressesPerSecond(for: slot.slot)
-        // The trigger button is what activates the HyperShift layer, so its action cannot be reassigned
-        // from inside that layer.
-        let isTriggerLocked = editorStore.editableButtonLayer == .hypershift && kind == .hypershiftTrigger
+        // The trigger is declared on the normal layer, so inside the HyperShift layer we lock that same
+        // physical button rather than whichever row happens to carry a trigger block in this layer.
+        let triggerSlot = editorStore.editableButtonBindingsByLayer[.normal]?.first { $0.value.kind == .hypershiftTrigger }?.key
+        let isTriggerLocked = editorStore.editableButtonLayer == .hypershift && slot.slot == triggerSlot
         let notice = isTriggerLocked ? "The HyperShift trigger cannot be remapped inside the HyperShift layer." : deviceStore.buttonSlotNotice(slot.slot)
         return ButtonBindingRowModel(
             slot: slot.slot, friendlyName: slot.friendlyName, group: slot.group, isEditable: deviceStore.isButtonSlotEditable(slot.slot) && !isBusy && !isTriggerLocked, selectedKind: kind, turboEligible: kind != .default && kind.supportsTurbo,
