@@ -6,20 +6,21 @@ enum MouseMapAnchor {
     /// Normalized (`0...1`) anchor inside the chassis rect, or `nil` when the slot has no dedicated anchor.
     static func normalizedPoint(for slot: Int) -> CGPoint? {
         switch slot {
-        case 1: return CGPoint(x: 0.30, y: 0.115)
-        case 2: return CGPoint(x: 0.70, y: 0.115)
-        case 3: return CGPoint(x: 0.50, y: 0.155)
-        case 9: return CGPoint(x: 0.50, y: 0.072)
-        case 10: return CGPoint(x: 0.50, y: 0.238)
-        case 52: return CGPoint(x: 0.41, y: 0.188)
-        case 53: return CGPoint(x: 0.59, y: 0.188)
-        case 4: return CGPoint(x: 0.085, y: 0.500)
-        case 5: return CGPoint(x: 0.085, y: 0.618)
-        case 15: return CGPoint(x: 0.135, y: 0.385)
-        case 96: return CGPoint(x: 0.50, y: 0.318)
-        case 6: return CGPoint(x: 0.50, y: 0.432)
-        case 14: return CGPoint(x: 0.50, y: 0.600)
-        case 106: return CGPoint(x: 0.50, y: 0.702)
+        case 1: return CGPoint(x: 0.325, y: 0.098)
+        case 2: return CGPoint(x: 0.675, y: 0.098)
+        case 3: return CGPoint(x: 0.50, y: 0.140)
+        case 9: return CGPoint(x: 0.50, y: 0.070)
+        case 10: return CGPoint(x: 0.50, y: 0.212)
+        case 52: return CGPoint(x: 0.435, y: 0.172)
+        case 53: return CGPoint(x: 0.565, y: 0.172)
+        // Basilisk V3 carries two controls behind the wheel: the scroll-mode toggle and the DPI cycle button.
+        case 14: return CGPoint(x: 0.435, y: 0.290)
+        case 96: return CGPoint(x: 0.565, y: 0.290)
+        case 15: return CGPoint(x: 0.140, y: 0.470)
+        case 6: return CGPoint(x: 0.110, y: 0.360)
+        case 4: return CGPoint(x: 0.105, y: 0.585)
+        case 5: return CGPoint(x: 0.105, y: 0.672)
+        case 106: return CGPoint(x: 0.50, y: 0.860)
         default: return nil
         }
     }
@@ -129,7 +130,8 @@ struct MouseMapDiagram: View {
             guard calloutSide == side else { continue }
             result.append(MouseMapCallout(slot: row.slot, title: row.friendlyName, action: row.actionLabel, side: side, anchor: anchor))
         }
-        return result
+        // Ordering by anchor height keeps leader lines from crossing each other on the same flank.
+        return result.sorted { $0.anchor.y < $1.anchor.y }
     }
 }
 
@@ -165,19 +167,18 @@ private struct MouseChassisView: View {
 
                 ForEach(0..<4, id: \.self) { index in RoundedRectangle(cornerRadius: 1).fill(accent.opacity(0.45)).frame(width: width * 0.09, height: 1.2).position(x: width * 0.5, y: height * (0.105 + (Double(index) * 0.026))) }
 
-                // Back / forward thumb buttons.
-                ForEach([0.500, 0.618], id: \.self) { thumbY in Capsule().fill(Color.white.opacity(0.16)).overlay(Capsule().stroke(Color.white.opacity(0.28), lineWidth: 1)).frame(width: width * 0.085, height: height * 0.085).position(x: width * 0.115, y: height * thumbY) }
+                // Back / forward thumb buttons, sitting below the sensitivity clutch paddle.
+                ForEach([0.585, 0.672], id: \.self) { thumbY in Capsule().fill(Color.white.opacity(0.16)).overlay(Capsule().stroke(Color.white.opacity(0.30), lineWidth: 1)).frame(width: width * 0.09, height: height * 0.072).position(x: width * 0.128, y: height * thumbY) }
 
-                // Sensitivity clutch paddle hugging the left flank.
-                Capsule().fill(Color.white.opacity(0.11)).overlay(Capsule().stroke(Color.white.opacity(0.22), lineWidth: 1)).frame(width: width * 0.075, height: height * 0.075).position(x: width * 0.155, y: height * 0.385)
+                Capsule().fill(Color.white.opacity(0.13)).overlay(Capsule().stroke(Color.white.opacity(0.26), lineWidth: 1)).frame(width: width * 0.08, height: height * 0.066).position(x: width * 0.170, y: height * 0.470)
 
-                // Top DPI button.
-                RoundedRectangle(cornerRadius: 3).fill(Color.white.opacity(0.16)).overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.white.opacity(0.26), lineWidth: 1)).frame(width: width * 0.13, height: height * 0.026).position(x: width * 0.5, y: height * 0.318)
+                // The two controls behind the wheel: scroll-mode toggle on the left, DPI cycle on the right.
+                RoundedRectangle(cornerRadius: 3).fill(Color.white.opacity(0.16)).overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.white.opacity(0.30), lineWidth: 1)).frame(width: width * 0.105, height: height * 0.024).position(x: width * 0.435, y: height * 0.290)
 
-                // Hypershift / sniper control and the underside profile + scroll-mode buttons.
-                Capsule().fill(Color.white.opacity(0.10)).overlay(Capsule().stroke(Color.white.opacity(0.20), lineWidth: 1)).frame(width: width * 0.10, height: height * 0.032).position(x: width * 0.5, y: height * 0.432)
-                Capsule().fill(Color.white.opacity(0.10)).overlay(Capsule().stroke(Color.white.opacity(0.20), lineWidth: 1)).frame(width: width * 0.10, height: height * 0.026).position(x: width * 0.5, y: height * 0.600)
-                Capsule().fill(Color.white.opacity(0.10)).overlay(Capsule().stroke(Color.white.opacity(0.20), lineWidth: 1)).frame(width: width * 0.10, height: height * 0.026).position(x: width * 0.5, y: height * 0.702)
+                RoundedRectangle(cornerRadius: 3).fill(Color.white.opacity(0.16)).overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.white.opacity(0.30), lineWidth: 1)).frame(width: width * 0.105, height: height * 0.024).position(x: width * 0.565, y: height * 0.290)
+
+                // Underside profile button.
+                Capsule().fill(Color.white.opacity(0.10)).overlay(Capsule().stroke(Color.white.opacity(0.20), lineWidth: 1)).frame(width: width * 0.10, height: height * 0.020).position(x: width * 0.5, y: height * 0.860)
             }
         }
     }
@@ -189,11 +190,13 @@ private struct MouseChassisShape: Shape {
         let width = rect.width
         let height = rect.height
         var path = Path()
-        path.move(to: CGPoint(x: width * 0.5, y: height))
-        path.addCurve(to: CGPoint(x: width * 0.995, y: height * 0.40), control1: CGPoint(x: width * 0.905, y: height * 0.985), control2: CGPoint(x: width * 0.995, y: height * 0.715))
-        path.addCurve(to: CGPoint(x: width * 0.5, y: 0), control1: CGPoint(x: width * 0.995, y: height * 0.135), control2: CGPoint(x: width * 0.735, y: 0))
-        path.addCurve(to: CGPoint(x: width * 0.005, y: height * 0.40), control1: CGPoint(x: width * 0.265, y: 0), control2: CGPoint(x: width * 0.005, y: height * 0.135))
-        path.addCurve(to: CGPoint(x: width * 0.5, y: height), control1: CGPoint(x: width * 0.005, y: height * 0.715), control2: CGPoint(x: width * 0.095, y: height * 0.985))
+        path.move(to: CGPoint(x: width * 0.50, y: height))
+        path.addCurve(to: CGPoint(x: width * 0.99, y: height * 0.40), control1: CGPoint(x: width * 0.88, y: height * 0.99), control2: CGPoint(x: width * 0.99, y: height * 0.70))
+        path.addCurve(to: CGPoint(x: width * 0.52, y: 0), control1: CGPoint(x: width * 0.99, y: height * 0.12), control2: CGPoint(x: width * 0.78, y: 0))
+        path.addCurve(to: CGPoint(x: width * 0.015, y: height * 0.40), control1: CGPoint(x: width * 0.26, y: 0), control2: CGPoint(x: width * 0.015, y: height * 0.12))
+        // Right-handed ergonomics: the left flank bulges into a thumb rest before tapering to the heel.
+        path.addCurve(to: CGPoint(x: width * 0.055, y: height * 0.72), control1: CGPoint(x: width * -0.035, y: height * 0.54), control2: CGPoint(x: width * -0.015, y: height * 0.68))
+        path.addCurve(to: CGPoint(x: width * 0.50, y: height), control1: CGPoint(x: width * 0.19, y: height * 0.92), control2: CGPoint(x: width * 0.30, y: height))
         path.closeSubpath()
         return path
     }

@@ -404,6 +404,27 @@ public struct LightingEffectPatch: Sendable, Hashable, Codable {
     }
 }
 
+/// Categories mirroring how Razer Synapse groups assignable button actions.
+public enum ButtonBindingCategory: String, CaseIterable, Identifiable, Sendable {
+    case mouse
+    case keyboard
+    case media
+    case dpi
+    case other
+
+    public var id: String { rawValue }
+
+    public var label: String {
+        switch self {
+        case .mouse: return localized("Mouse Buttons")
+        case .keyboard: return localized("Keyboard")
+        case .media: return localized("Media")
+        case .dpi: return localized("DPI")
+        case .other: return localized("Other")
+        }
+    }
+}
+
 /// Defines which button-binding layer a write targets.
 ///
 /// `normal` is the primary binding. `hypershift` is the alternate layer the device activates
@@ -593,6 +614,17 @@ public enum ButtonBindingKind: String, CaseIterable, Identifiable, Codable, Send
         case .mediaVolumeUp: return localized("Volume Up")
         case .mediaVolumeDown: return localized("Volume Down")
         case .clearLayer: return localized("Disabled")
+        }
+    }
+
+    /// Groups the remap actions the way Razer Synapse presents them, so the picker reads as categories.
+    public var category: ButtonBindingCategory {
+        switch self {
+        case .leftClick, .rightClick, .middleClick, .scrollUp, .scrollDown, .scrollLeft, .scrollRight, .mouseBack, .mouseForward: return .mouse
+        case .keyboardSimple: return .keyboard
+        case .mediaPlayPause, .mediaNextTrack, .mediaPreviousTrack, .mediaStop, .mediaMute, .mediaVolumeUp, .mediaVolumeDown: return .media
+        case .dpiCycle, .dpiClutch: return .dpi
+        case .default, .clearLayer: return .other
         }
     }
 

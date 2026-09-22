@@ -247,6 +247,13 @@
 "Click a button on the mouse to edit it." = "点击鼠标示意图上的按键即可编辑。";
 "Selected button" = "已选按键";
 
+/* ===== 动作分类（仿雷云） ===== */
+"Mouse Buttons" = "鼠标按键";
+"Keyboard" = "键盘按键";
+"Media" = "多媒体键";
+"DPI" = "DPI";
+"Other" = "其他";
+
 /* ===== 按键映射 ===== */
 "Buttons" = "按键";
 "Button" = "按键";

@@ -587,7 +587,10 @@ private struct ButtonBindingHeaderRow: View {
             Spacer(minLength: 12)
 
             Picker("", selection: Binding(get: { editorStore.buttonBindingKind(for: row.slot) }, set: { editorStore.updateButtonBindingKind(slot: row.slot, kind: $0) })) {
-                ForEach(ButtonBindingSupport.availableButtonBindingKinds(for: row.slot, profileID: profileID)) { kind in Text(kind.label).tag(kind) }
+                ForEach(ButtonBindingCategory.allCases) { category in
+                    let kinds = ButtonBindingSupport.availableButtonBindingKinds(for: row.slot, profileID: profileID).filter { $0.category == category }
+                    if !kinds.isEmpty { Section(category.label) { ForEach(kinds) { kind in Text(kind.label).tag(kind) } } }
+                }
             }.labelsHidden().pickerStyle(.menu).frame(width: 220, alignment: .trailing).disabled(!row.isEditable).accessibilityIdentifier("button-binding-kind-picker-\(row.slot)")
         }
     }
