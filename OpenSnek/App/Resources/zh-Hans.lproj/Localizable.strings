@@ -590,3 +590,8 @@
 "Mute" = "静音";
 "Volume Up" = "音量加";
 "Volume Down" = "音量减";
+
+/* ===== 按键层 ===== */
+"Normal Layer" = "普通层";
+"Hypershift Layer" = "Hypershift 层";
+"Layer" = "层";

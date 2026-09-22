@@ -404,6 +404,34 @@ public struct LightingEffectPatch: Sendable, Hashable, Codable {
     }
 }
 
+/// Defines which button-binding layer a write targets.
+///
+/// `normal` is the primary binding. `hypershift` is the alternate layer the device activates
+/// while its Hypershift trigger button is held. The layer is a wire argument (`0x02:0x0C`
+/// argument `[2]`) rather than part of the 7-byte function block, so it travels on the
+/// transient patch and is never persisted alongside draft bindings.
+public enum ButtonBindingLayer: String, CaseIterable, Identifiable, Codable, Sendable {
+    case normal
+    case hypershift
+
+    public var id: String { rawValue }
+
+    public var label: String {
+        switch self {
+        case .normal: return localized("Normal Layer")
+        case .hypershift: return localized("Hypershift Layer")
+        }
+    }
+
+    /// The `0x02:0x0C` / `0x02:0x8C` argument that selects this layer on the wire.
+    public var usbHypershiftFlag: UInt8 {
+        switch self {
+        case .normal: return 0x00
+        case .hypershift: return 0x01
+        }
+    }
+}
+
 /// Stores button binding patch data.
 public struct ButtonBindingPatch: Sendable, Hashable, Codable {
     public let slot: Int
@@ -416,8 +444,9 @@ public struct ButtonBindingPatch: Sendable, Hashable, Codable {
     public let persistentProfile: Int
     public let writePersistentLayer: Bool
     public let writeDirectLayer: Bool
+    public let layer: ButtonBindingLayer
 
-    public init(slot: Int, kind: ButtonBindingKind, hidKey: Int?, hidModifiers: Int? = nil, turboEnabled: Bool = false, turboRate: Int? = nil, clutchDPI: Int? = nil, persistentProfile: Int = 1, writePersistentLayer: Bool = true, writeDirectLayer: Bool = true) {
+    public init(slot: Int, kind: ButtonBindingKind, hidKey: Int?, hidModifiers: Int? = nil, turboEnabled: Bool = false, turboRate: Int? = nil, clutchDPI: Int? = nil, persistentProfile: Int = 1, writePersistentLayer: Bool = true, writeDirectLayer: Bool = true, layer: ButtonBindingLayer = .normal) {
         self.slot = slot
         self.kind = kind
         self.hidKey = hidKey
@@ -428,6 +457,7 @@ public struct ButtonBindingPatch: Sendable, Hashable, Codable {
         self.persistentProfile = OnboardProfileLimits.clampPersistentProfileID(persistentProfile)
         self.writePersistentLayer = writePersistentLayer
         self.writeDirectLayer = writeDirectLayer
+        self.layer = layer
     }
 }
 

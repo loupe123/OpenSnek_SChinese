@@ -32,6 +32,7 @@ extension BridgeClient {
         let persistentProfile: Int
         let writePersistentLayer: Bool
         let writeDirectLayer: Bool
+        let layer: ButtonBindingLayer
     }
 
     static func usbButtonWriteSucceeded(writePersistentLayer: Bool, writeDirectLayer: Bool, wrotePersistent: Bool, wroteDirect: Bool) -> Bool {
@@ -660,16 +661,17 @@ extension BridgeClient {
         let clampedSlot = UInt8(max(0, min(255, request.slot)))
 
         let clampedPersistentProfile = UInt8(OnboardProfileLimits.clampPersistentProfileID(request.persistentProfile))
+        let hypershift = request.layer.usbHypershiftFlag
 
         let wrotePersistent: Bool
         if request.writePersistentLayer {
-            wrotePersistent = try setButtonBindingUSBRaw(session, device, request: USBRawButtonBindingWrite(profile: clampedPersistentProfile, slot: clampedSlot, hypershift: 0x00, functionBlock: functionBlock))
+            wrotePersistent = try setButtonBindingUSBRaw(session, device, request: USBRawButtonBindingWrite(profile: clampedPersistentProfile, slot: clampedSlot, hypershift: hypershift, functionBlock: functionBlock))
             guard wrotePersistent else { return false }
         } else {
             wrotePersistent = false
         }
         let wroteDirect: Bool
-        if request.writeDirectLayer { wroteDirect = try setButtonBindingUSBRaw(session, device, request: USBRawButtonBindingWrite(profile: 0x00, slot: clampedSlot, hypershift: 0x00, functionBlock: functionBlock)) } else { wroteDirect = false }
+        if request.writeDirectLayer { wroteDirect = try setButtonBindingUSBRaw(session, device, request: USBRawButtonBindingWrite(profile: 0x00, slot: clampedSlot, hypershift: hypershift, functionBlock: functionBlock)) } else { wroteDirect = false }
         return Self.usbButtonWriteSucceeded(writePersistentLayer: request.writePersistentLayer, writeDirectLayer: request.writeDirectLayer, wrotePersistent: wrotePersistent, wroteDirect: wroteDirect)
     }
 

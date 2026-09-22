@@ -15,13 +15,13 @@ import OpenSnekCore
         return editorController.defaultButtonBinding(for: slot)
     }
 
-    func makeButtonBindingPatch(slot: Int, draft: ButtonBindingDraft, profileID: DeviceProfileID?, persistentProfile: Int, writePersistentLayer: Bool = true, writeDirectLayer: Bool) -> ButtonBindingPatch {
+    func makeButtonBindingPatch(slot: Int, draft: ButtonBindingDraft, profileID: DeviceProfileID?, persistentProfile: Int, writePersistentLayer: Bool = true, writeDirectLayer: Bool, layer: ButtonBindingLayer = .normal) -> ButtonBindingPatch {
         let applied: ButtonBindingDraft
         if draft.kind == .default { applied = ButtonBindingSupport.semanticDefaultButtonBinding(for: slot, profileID: profileID) ?? draft } else { applied = draft }
         return ButtonBindingPatch(
             slot: slot, kind: applied.kind, hidKey: applied.kind == .keyboardSimple ? applied.hidKey : nil, hidModifiers: applied.kind == .keyboardSimple ? applied.hidModifiers : nil, turboEnabled: applied.kind.supportsTurbo ? applied.turboEnabled : false,
             turboRate: applied.kind.supportsTurbo && applied.turboEnabled ? applied.turboRate : nil, clutchDPI: applied.kind == .dpiClutch ? applied.clutchDPI ?? ButtonBindingSupport.defaultDPIClutchDPI(for: profileID) : nil, persistentProfile: persistentProfile,
-            writePersistentLayer: writePersistentLayer, writeDirectLayer: writeDirectLayer)
+            writePersistentLayer: writePersistentLayer, writeDirectLayer: writeDirectLayer, layer: layer)
     }
 
     func applyButtonBinding(slot: Int) async {

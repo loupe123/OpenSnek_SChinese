@@ -34,6 +34,7 @@ extension BridgeClient {
         }
 
         if let binding = patch.buttonBinding {
+            guard binding.layer == .normal else { throw BridgeError.commandFailed("Hypershift layer button writes are not supported over Bluetooth yet.") }
             let slot = UInt8(max(0, min(255, binding.slot)))
             let kind = binding.kind
             let hidKey = UInt8(max(0, min(255, binding.hidKey ?? 4)))
@@ -126,7 +127,7 @@ extension BridgeClient {
                         $0, device,
                         request: USBButtonBindingWrite(
                             slot: slot, kind: kind, hidKey: hidKey, hidModifiers: hidModifiers, turboEnabled: turboEnabled, turboRate: turboRate, clutchDPI: clutchDPI, persistentProfile: binding.persistentProfile, writePersistentLayer: binding.writePersistentLayer,
-                            writeDirectLayer: binding.writeDirectLayer))
+                            writeDirectLayer: binding.writeDirectLayer, layer: binding.layer))
                 })
             else { throw BridgeError.commandFailed("Failed to set button binding") }
         }
