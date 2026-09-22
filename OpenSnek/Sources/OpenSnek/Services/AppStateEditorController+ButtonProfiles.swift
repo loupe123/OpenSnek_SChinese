@@ -89,7 +89,7 @@ import OpenSnekCore
 
         guard let fromDevice = await loadUSBButtonBindingsFromDevice(device: device, profile: profile) else {
             let cached = buttonBindingsCacheByHydrationKey[hydrationKey] ?? [:]
-            AppLog.debug("AppState", "usb button hydration read unavailable id=\(device.id) profile=\(profile) cachedSlots=\(cached.keys.sorted())")
+            registerButtonBindingsReadbackFailure(hydrationKey: hydrationKey, device: device, profile: profile, cachedSlots: cached.keys.sorted())
             return
         }
         guard !Task.isCancelled else { return }
@@ -107,11 +107,32 @@ import OpenSnekCore
         buttonBindingsCacheByHydrationKey[hydrationKey] = hydrated
         savePersistedButtonBindings(device: device, bindings: hydrated, profile: profile)
 
+        markButtonBindingsHydrationSucceeded(hydrationKey: hydrationKey)
         if hydratedButtonBindingsKey == hydrationKey { editorStore.editableButtonBindings = hydrated }
         if liveButtonProfileSource(for: device) == .mouseSlot(profile) { setLiveButtonProfileSource(.mouseSlot(profile), bindings: hydrated, for: device) }
 
         AppLog.debug("AppState", "hydrated button bindings from USB readback id=\(device.id) profile=\(profile) slots=\(fromDevice.keys.sorted())")
     }
+
+    /// Records a failed device readback and releases the one-shot guard so a later hydration pass can retry.
+    ///
+    /// Without releasing the guard a single transient failure would park the workspace forever, which
+    /// previously left the editor showing defaults for a layer the device never actually answered for.
+    func registerButtonBindingsReadbackFailure(hydrationKey: String, device: MouseDevice, profile: Int, cachedSlots: [Int]) {
+        let shouldRetry = buttonBindingsReadbackRetry.recordFailure(key: hydrationKey)
+        if shouldRetry { buttonBindingsReadbackAttemptedKeys.remove(hydrationKey) }
+
+        AppLog.debug("AppState", "usb button hydration read unavailable id=\(device.id) profile=\(profile) attempt=\(buttonBindingsReadbackRetry.failureCount(for: hydrationKey)) retryBudgetExhausted=\(!shouldRetry) cachedSlots=\(cachedSlots)")
+    }
+
+    /// Marks a hydration key as backed by real device data, which is what allows its layer to be written back.
+    func markButtonBindingsHydrationSucceeded(hydrationKey: String) {
+        buttonBindingsReadbackRetry.recordSuccess(key: hydrationKey)
+        editorStore.hydratedButtonBindingKeys.insert(hydrationKey)
+    }
+
+    /// Whether the given layer's workspace for this device/profile was read back from the device.
+    func isButtonBindingsHydrated(device: MouseDevice, profile: Int, layer: ButtonBindingLayer) -> Bool { editorStore.hydratedButtonBindingKeys.contains(buttonBindingsHydrationKey(device: device, profile: profile, layer: layer)) }
 
     func primeUSBButtonProfileSummariesIfNeeded(device: MouseDevice) {
         guard device.transport == .usb, editorStore.supportsMultipleOnboardProfiles else { return }

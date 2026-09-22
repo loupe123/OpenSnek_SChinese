@@ -14,10 +14,18 @@ import OpenSnekCore
     var isHydrating = false
     var hydratedLightingStateByDeviceID: Set<String> = []
     var hydratedSoftwareLightingPreferencesByDeviceID: Set<String> = []
-    var hydratedButtonBindingsKey: String?
+    /// Hydration key currently backing the editable button workspace, mirrored onto `EditorStore` so
+    /// the UI can tell whether the active workspace came from a real device read.
+    var hydratedButtonBindingsKey: String? {
+        get { editorStore.activeButtonBindingHydrationKey }
+        set { editorStore.activeButtonBindingHydrationKey = newValue }
+    }
     var buttonBindingsCacheByHydrationKey: [String: [Int: ButtonBindingDraft]] = [:]
     var buttonBindingsReadbackAttemptedKeys: Set<String> = []
     var buttonBindingsReadbackInFlightKeys: Set<String> = []
+    /// Bounded retry bookkeeping for readback hydration, so one transient failure does not park a
+    /// workspace forever while a silent device is still not polled without bound.
+    var buttonBindingsReadbackRetry = ButtonBindingsReadbackRetryPolicy()
     var buttonProfileSummaryHydrationInFlightDeviceIDs: Set<String> = []
     var buttonProfileWorkspaceSourceByDeviceID: [String: ButtonProfileSource] = [:]
     var buttonProfileLiveSourceByDeviceID: [String: ButtonProfileSource] = [:]
@@ -263,6 +271,14 @@ import OpenSnekCore
             return !removedDeviceIDs.contains(String(hydratedDeviceID))
         }
         buttonWorkspaceEditRevisionByHydrationKey = buttonWorkspaceEditRevisionByHydrationKey.filter { key, _ in
+            guard let hydratedDeviceID = key.split(separator: "#").first else { return true }
+            return !removedDeviceIDs.contains(String(hydratedDeviceID))
+        }
+        buttonBindingsReadbackRetry.retainKeys { key in
+            guard let hydratedDeviceID = key.split(separator: "#").first else { return true }
+            return !removedDeviceIDs.contains(String(hydratedDeviceID))
+        }
+        editorStore.hydratedButtonBindingKeys = editorStore.hydratedButtonBindingKeys.filter { key in
             guard let hydratedDeviceID = key.split(separator: "#").first else { return true }
             return !removedDeviceIDs.contains(String(hydratedDeviceID))
         }

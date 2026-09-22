@@ -138,9 +138,28 @@ import OpenSnekCore
         editorController.markButtonWorkspaceAppliedToLive(bindings: editorStore.editableButtonBindings, exactSource: editorController.currentButtonProfileSource())
     }
 
+    /// Whether a bulk button write may proceed for the active layer.
+    ///
+    /// Bulk writers fall back to semantic defaults for slots the editor never loaded, so running one
+    /// against a workspace we never populated would replace the device layer with values the user
+    /// never chose. Every normal-layer ownership path populates the workspace, so an emptiness check
+    /// is enough there. The Hypershift layer is only ever populated by a device readback, so it
+    /// additionally requires that readback to have succeeded.
+    func canWriteActiveButtonLayerBulk(device: MouseDevice, profile: Int) -> Bool {
+        let layer = editorStore.editableButtonLayer
+        let allowed: Bool
+        switch layer {
+        case .normal: allowed = !editorStore.editableButtonBindings.isEmpty
+        case .hypershift: allowed = editorController.isButtonBindingsHydrated(device: device, profile: profile, layer: layer)
+        }
+        if !allowed { AppLog.debug("AppState", "skipped bulk button write for unpopulated layer device=\(device.id) profile=\(profile) layer=\(layer.rawValue) slots=\(editorStore.editableButtonBindings.count)") }
+        return allowed
+    }
+
     func writeCurrentButtonWorkspaceToMouseSlot(_ targetProfile: Int) async {
         guard let selectedDevice = deviceStore.selectedDevice else { return }
         let clampedTarget = max(1, min(editorStore.visibleOnboardProfileCount, targetProfile))
+        guard canWriteActiveButtonLayerBulk(device: selectedDevice, profile: clampedTarget) else { return }
 
         for slot in writableButtonSlots(for: selectedDevice) {
             let patch = DevicePatch(buttonBinding: makeEditableButtonBindingPatch(slot: slot, persistentProfile: clampedTarget, writePersistentLayer: true, writeDirectLayer: false))
@@ -205,6 +224,7 @@ import OpenSnekCore
     func saveSelectedUSBButtonProfile(activateAfterSave: Bool = false) async {
         guard let selectedDevice = deviceStore.selectedDevice else { return }
         let profile = editorStore.editableUSBButtonProfile
+        guard canWriteActiveButtonLayerBulk(device: selectedDevice, profile: profile) else { return }
         let liveProfile = editorStore.liveUSBButtonProfile
         let writableSlots = selectedDevice.button_layout?.writableSlots ?? deviceStore.visibleButtonSlots.map(\.slot)
         let persistedBindings = editorController.cachedButtonBindings(device: selectedDevice, profile: profile)

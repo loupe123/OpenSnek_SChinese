@@ -77,6 +77,15 @@ import OpenSnekCore
         get { editableButtonBindingsByLayer[editableButtonLayer] ?? [:] }
         set { editableButtonBindingsByLayer[editableButtonLayer] = newValue }
     }
+    /// Hydration key currently backing the editable button workspace.
+    var activeButtonBindingHydrationKey: String?
+    /// Hydration keys whose workspace was actually read back from the device.
+    ///
+    /// A workspace that only ever held editor defaults must never be written back, otherwise a bulk
+    /// save would replace the layer on the device with defaults the user never chose.
+    var hydratedButtonBindingKeys: Set<String> = []
+    /// Whether the workspace behind `editableButtonLayer` came from a successful device read.
+    var activeButtonLayerIsHydrated: Bool { activeButtonBindingHydrationKey.map { hydratedButtonBindingKeys.contains($0) } ?? false }
     var lightingGradientRevision: UInt64 = 0
     var isEditingDpiControl = false
     var isButtonProfileOperationInFlight = false

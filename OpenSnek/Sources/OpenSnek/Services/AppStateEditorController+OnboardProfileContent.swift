@@ -105,6 +105,7 @@ private struct ProjectedOnboardDPIState {
 
         buttonBindingsCacheByHydrationKey[hydrationKey] = bindings
         buttonBindingsReadbackAttemptedKeys.insert(hydrationKey)
+        markButtonBindingsHydrationSucceeded(hydrationKey: hydrationKey)
 
         let updatedSnapshot = snapshot.replacingButtonBindings(bindings)
         storeCurrentOnboardProfileSnapshot(updatedSnapshot, device: device, source: "readOnboardProfileButtonBindings")
@@ -122,6 +123,7 @@ private struct ProjectedOnboardDPIState {
         buttonBindingsCacheByHydrationKey[hydrationKey] = bindings
         savePersistedButtonBindings(device: device, bindings: bindings, profile: persistentProfileID)
         buttonBindingsReadbackAttemptedKeys.insert(hydrationKey)
+        markButtonBindingsHydrationSucceeded(hydrationKey: hydrationKey)
         if let appliedEditRevision, let pendingEditRevision = buttonWorkspaceEditRevisionByHydrationKey[hydrationKey], pendingEditRevision <= appliedEditRevision { buttonWorkspaceEditRevisionByHydrationKey.removeValue(forKey: hydrationKey) }
         if selectedOnboardProfileIDByDeviceID[device.id] == profileID, deviceStore.selectedDeviceID == device.id {
             hydratedButtonBindingsKey = hydrationKey
