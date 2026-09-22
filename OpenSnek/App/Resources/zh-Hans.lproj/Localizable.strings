@@ -582,3 +582,11 @@
 "Denied" = "已拒绝";
 "Real-time HID active" = "实时 HID 已激活";
 "Function Keys" = "功能键";
+
+/* ===== 多媒体按键 ===== */
+"Play/Pause" = "播放/暂停";
+"Next Track" = "下一曲";
+"Previous Track" = "上一曲";
+"Mute" = "静音";
+"Volume Up" = "音量加";
+"Volume Down" = "音量减";
