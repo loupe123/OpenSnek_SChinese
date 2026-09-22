@@ -450,6 +450,10 @@ public enum BLEVendorProtocol {
             // family is encoded identically here. Hardware validation over BLE is still pending.
             guard let usage = ButtonBindingSupport.usbConsumerUsage(for: kind) else { return Data([0x01, slot, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]) }
             return buildRawFunctionBlockPayload(slot: slot, functionBlock: [0x0A, 0x02, UInt8((usage >> 8) & 0xFF), UInt8(usage & 0xFF), 0x00, 0x00, 0x00])
+        case .hypershiftTrigger:
+            // Class 0x0C marks the layered HyperShift trigger action; captured from USB hardware and
+            // mirrored here because the 7-byte function block is shared across both transports.
+            return buildRawFunctionBlockPayload(slot: slot, functionBlock: [0x0C, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00])
         case .clearLayer: return Data([0x01, slot, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00])
         }
     }

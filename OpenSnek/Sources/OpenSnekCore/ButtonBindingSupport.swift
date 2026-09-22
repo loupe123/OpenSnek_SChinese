@@ -184,6 +184,10 @@ public enum ButtonBindingSupport {
             let hidKey = Int(data[1])
             let rawRate = (Int(data[2]) << 8) | Int(data[3])
             return ButtonBindingDraft(kind: .keyboardSimple, hidKey: max(4, min(231, hidKey)), hidModifiers: max(0, min(255, hidModifiers)), turboEnabled: true, turboRate: clampTurboRate(rawRate))
+        case 0x0C:
+            // Class 0x0C is the HyperShift trigger action. Captured from a Basilisk V3 (0x0099) whose
+            // forward button was assigned as the trigger: block `0c 01 01 00 00 00 00`.
+            return ButtonBindingDraft(kind: .hypershiftTrigger, hidKey: 4, turboEnabled: false, turboRate: defaultTurboRate)
         case 0x0E:
             guard let buttonID = data.first, let kind = horizontalScrollKind(forButtonID: buttonID, profileID: profileID) ?? buttonKindFromUSBMouseButton(buttonID) else { return nil }
             guard data.count >= 3 else { return ButtonBindingDraft(kind: kind, hidKey: 4, turboEnabled: false, turboRate: defaultTurboRate) }
@@ -296,6 +300,7 @@ public enum ButtonBindingSupport {
         switch kind {
         case .default: return defaultUSBFunctionBlock(for: slot, profileID: profileID) ?? [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
         case .dpiCycle: return [0x06, 0x01, 0x06, 0x00, 0x00, 0x00, 0x00]
+        case .hypershiftTrigger: return [0x0C, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00]
         case .dpiClutch: return basiliskDPIClutchBlock(dpi: clutchDPI ?? defaultBasiliskDPIClutchDPI, profileID: profileID ?? .basiliskV3Pro)
         case .clearLayer: return [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
         case .keyboardSimple:

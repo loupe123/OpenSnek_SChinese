@@ -2,31 +2,36 @@ import OpenSnekCore
 import SwiftUI
 
 /// Anchor geometry that maps Razer button slot ids onto normalized points inside the mouse chassis.
+///
+/// The points follow the Basilisk V3 product photography: the chunky right-handed body, the tall
+/// lit scroll wheel with its tilt arrows, the two controls behind the wheel, the protruding
+/// multi-function trigger and the thumb cluster on the left flank.
 enum MouseMapAnchor {
     /// Normalized (`0...1`) anchor inside the chassis rect, or `nil` when the slot has no dedicated anchor.
     static func normalizedPoint(for slot: Int) -> CGPoint? {
         switch slot {
-        case 1: return CGPoint(x: 0.325, y: 0.098)
-        case 2: return CGPoint(x: 0.675, y: 0.098)
-        case 3: return CGPoint(x: 0.50, y: 0.140)
-        case 9: return CGPoint(x: 0.50, y: 0.070)
-        case 10: return CGPoint(x: 0.50, y: 0.212)
-        case 52: return CGPoint(x: 0.435, y: 0.172)
-        case 53: return CGPoint(x: 0.565, y: 0.172)
-        // Basilisk V3 carries two controls behind the wheel: the scroll-mode toggle and the DPI cycle button.
-        case 14: return CGPoint(x: 0.435, y: 0.290)
-        case 96: return CGPoint(x: 0.565, y: 0.290)
-        case 15: return CGPoint(x: 0.140, y: 0.470)
-        case 6: return CGPoint(x: 0.110, y: 0.360)
-        case 4: return CGPoint(x: 0.105, y: 0.585)
-        case 5: return CGPoint(x: 0.105, y: 0.672)
-        case 106: return CGPoint(x: 0.50, y: 0.860)
+        case 1: return CGPoint(x: 0.315, y: 0.190)
+        case 2: return CGPoint(x: 0.685, y: 0.190)
+        case 9: return CGPoint(x: 0.500, y: 0.165)
+        case 3: return CGPoint(x: 0.500, y: 0.205)
+        case 10: return CGPoint(x: 0.500, y: 0.280)
+        case 52: return CGPoint(x: 0.415, y: 0.222)
+        case 53: return CGPoint(x: 0.585, y: 0.222)
+        // Behind the wheel sit two separate controls: the scroll-mode toggle and the DPI cycle button.
+        case 14: return CGPoint(x: 0.445, y: 0.338)
+        case 96: return CGPoint(x: 0.555, y: 0.338)
+        // Left flank, front to back: multi-function trigger, clutch paddle, then the thumb buttons.
+        case 6: return CGPoint(x: 0.125, y: 0.268)
+        case 15: return CGPoint(x: 0.148, y: 0.420)
+        case 4: return CGPoint(x: 0.140, y: 0.512)
+        case 5: return CGPoint(x: 0.140, y: 0.596)
+        case 106: return CGPoint(x: 0.500, y: 0.880)
         default: return nil
         }
     }
 
     /// Slots without a dedicated anchor stack along the lower left flank so exotic layouts still get a call-out.
-    static func fallbackPoint(index: Int) -> CGPoint { CGPoint(x: 0.075, y: 0.78 + (Double(index) * 0.052)) }
+    static func fallbackPoint(index: Int) -> CGPoint { CGPoint(x: 0.070, y: 0.70 + (Double(index) * 0.055)) }
 }
 
 /// A single call-out label attached to a mouse button.
@@ -52,36 +57,55 @@ struct MouseMapDiagram: View {
     let selectedSlot: Int?
     let onSelect: (Int) -> Void
 
-    private let chassisSize = CGSize(width: 196, height: 336)
-    private let verticalInset: CGFloat = 14
+    private let chassisSize = CGSize(width: 216, height: 340)
+    private let verticalInset: CGFloat = 12
     /// Gap between the chassis flank and the call-out label, so the leader elbow has room to read.
-    private let labelGap: CGFloat = 30
+    private let labelGap: CGFloat = 26
+    /// Minimum vertical distance between two labels on the same flank.
+    private let minimumLabelSpacing: CGFloat = 30
 
     var body: some View {
         GeometryReader { proxy in
             let chassis = CGRect(x: (proxy.size.width - chassisSize.width) / 2, y: (proxy.size.height - chassisSize.height) / 2, width: chassisSize.width, height: chassisSize.height)
             let leftCallouts = callouts(side: .left)
             let rightCallouts = callouts(side: .right)
-            let labelWidth = max((proxy.size.width - chassisSize.width) / 2 - labelGap - 6, 76)
+            let labelWidth = max((proxy.size.width - chassisSize.width) / 2 - labelGap - 8, 72)
+            let leftLabels = labelPositions(callouts: leftCallouts, chassis: chassis, height: proxy.size.height)
+            let rightLabels = labelPositions(callouts: rightCallouts, chassis: chassis, height: proxy.size.height)
 
             ZStack(alignment: .topLeading) {
                 MouseChassisView().frame(width: chassisSize.width, height: chassisSize.height).position(x: chassis.midX, y: chassis.midY)
 
-                leaderPath(callouts: leftCallouts, chassis: chassis, height: proxy.size.height, side: .left).stroke(Color.white.opacity(0.30), style: StrokeStyle(lineWidth: 1, lineCap: .round)).allowsHitTesting(false)
+                leaderPath(callouts: leftCallouts, labelYs: leftLabels, chassis: chassis, side: .left).stroke(Color.white.opacity(0.30), style: StrokeStyle(lineWidth: 1, lineCap: .round)).allowsHitTesting(false)
 
-                leaderPath(callouts: rightCallouts, chassis: chassis, height: proxy.size.height, side: .right).stroke(Color.white.opacity(0.30), style: StrokeStyle(lineWidth: 1, lineCap: .round)).allowsHitTesting(false)
+                leaderPath(callouts: rightCallouts, labelYs: rightLabels, chassis: chassis, side: .right).stroke(Color.white.opacity(0.30), style: StrokeStyle(lineWidth: 1, lineCap: .round)).allowsHitTesting(false)
 
-                ForEach(Array(leftCallouts.enumerated()), id: \.element.id) { index, callout in labelView(callout, width: labelWidth).position(x: chassis.minX - labelGap - (labelWidth / 2), y: labelY(index: index, count: leftCallouts.count, height: proxy.size.height)) }
+                ForEach(Array(leftCallouts.enumerated()), id: \.element.id) { index, callout in labelView(callout, width: labelWidth).position(x: chassis.minX - labelGap - (labelWidth / 2), y: leftLabels[index]) }
 
-                ForEach(Array(rightCallouts.enumerated()), id: \.element.id) { index, callout in labelView(callout, width: labelWidth).position(x: chassis.maxX + labelGap + (labelWidth / 2), y: labelY(index: index, count: rightCallouts.count, height: proxy.size.height)) }
+                ForEach(Array(rightCallouts.enumerated()), id: \.element.id) { index, callout in labelView(callout, width: labelWidth).position(x: chassis.maxX + labelGap + (labelWidth / 2), y: rightLabels[index]) }
             }.frame(width: proxy.size.width, height: proxy.size.height)
         }
     }
 
-    private func labelY(index: Int, count: Int, height: CGFloat) -> CGFloat {
-        guard count > 1 else { return height / 2 }
-        let usable = max(height - (verticalInset * 2), 1)
-        return verticalInset + (usable * CGFloat(index) / CGFloat(count - 1))
+    /// Places each label at its own anchor height, then relaxes overlaps down the flank.
+    ///
+    /// Anchoring labels to their target's height is what keeps leader lines from crossing: each line
+    /// stays close to horizontal instead of sweeping across the diagram.
+    private func labelPositions(callouts: [MouseMapCallout], chassis: CGRect, height: CGFloat) -> [CGFloat] {
+        var positions: [CGFloat] = []
+        var previous = -CGFloat.greatestFiniteMagnitude
+        for callout in callouts {
+            let desired = chassis.minY + (callout.anchor.y * chassis.height)
+            let clamped = min(max(desired, verticalInset), height - verticalInset)
+            let y = max(clamped, previous + minimumLabelSpacing)
+            positions.append(y)
+            previous = y
+        }
+        if let last = positions.last, last > height - verticalInset {
+            let overflow = last - (height - verticalInset)
+            positions = positions.map { $0 - overflow }
+        }
+        return positions
     }
 
     private func labelView(_ callout: MouseMapCallout, width: CGFloat) -> some View {
@@ -99,14 +123,15 @@ struct MouseMapDiagram: View {
         }.buttonStyle(.plain).accessibilityIdentifier("mouse-map-callout-\(callout.slot)")
     }
 
-    /// Draws the official-style elbow leader: a horizontal stub out of the label, then a diagonal into the button.
-    private func leaderPath(callouts: [MouseMapCallout], chassis: CGRect, height: CGFloat, side: MouseMapCallout.Side) -> Path {
+    /// Draws the official-style elbow leader: a horizontal stub out of the label, then a run into the button.
+    private func leaderPath(callouts: [MouseMapCallout], labelYs: [CGFloat], chassis: CGRect, side: MouseMapCallout.Side) -> Path {
         var path = Path()
         for (index, callout) in callouts.enumerated() {
-            let y = labelY(index: index, count: callouts.count, height: height)
+            guard index < labelYs.count else { continue }
+            let y = labelYs[index]
             let anchor = CGPoint(x: chassis.minX + (callout.anchor.x * chassis.width), y: chassis.minY + (callout.anchor.y * chassis.height))
             let labelEdgeX: CGFloat = side == .left ? chassis.minX - labelGap : chassis.maxX + labelGap
-            let stubX: CGFloat = side == .left ? labelEdgeX - 8 : labelEdgeX + 8
+            let stubX: CGFloat = side == .left ? labelEdgeX - 10 : labelEdgeX + 10
 
             path.move(to: CGPoint(x: labelEdgeX, y: y))
             path.addLine(to: CGPoint(x: stubX, y: y))
@@ -135,68 +160,118 @@ struct MouseMapDiagram: View {
     }
 }
 
-/// Renders the stylized top-down mouse chassis with its wheel, button seams and side buttons.
+/// Renders the stylized top-down Basilisk V3 chassis with its grips, wheel and button seams.
 private struct MouseChassisView: View {
-    private let bodyFill = LinearGradient(colors: [Color.white.opacity(0.30), Color.white.opacity(0.10)], startPoint: .top, endPoint: .bottom)
     private let accent = Color(hex: 0x44D62C)
+    private let seam = Color.white.opacity(0.20)
+    private let controlFill = Color.white.opacity(0.16)
+    private let controlStroke = Color.white.opacity(0.32)
 
     var body: some View {
         GeometryReader { proxy in
-            let size = proxy.size
-            let width = size.width
-            let height = size.height
+            let width = proxy.size.width
+            let height = proxy.size.height
 
             ZStack {
-                MouseChassisShape().fill(bodyFill).overlay(MouseChassisShape().stroke(Color.white.opacity(0.52), lineWidth: 1.4))
+                // Body with the chunky shoulders, bulging grip flanks and rounded heel.
+                MouseChassisShape().fill(LinearGradient(colors: [Color.white.opacity(0.30), Color.white.opacity(0.12)], startPoint: .top, endPoint: .bottom)).overlay(MouseChassisShape().stroke(Color.white.opacity(0.52), lineWidth: 1.3))
 
-                // Button seams: the left/right main button split running out of the wheel housing.
+                hexGripPanel(width: width, height: height, mirrored: false)
+                hexGripPanel(width: width, height: height, mirrored: true)
+
+                // Main button seams running out of the wheel housing to each shoulder.
                 Path { path in
-                    path.move(to: CGPoint(x: width * 0.5, y: height * 0.245))
-                    path.addLine(to: CGPoint(x: width * 0.5, y: height * 0.02))
-                }.stroke(Color.white.opacity(0.22), lineWidth: 1)
+                    path.move(to: CGPoint(x: width * 0.50, y: height * 0.315))
+                    path.addLine(to: CGPoint(x: width * 0.50, y: height * 0.020))
+                    path.move(to: CGPoint(x: width * 0.185, y: height * 0.300))
+                    path.addQuadCurve(to: CGPoint(x: width * 0.50, y: height * 0.300), control: CGPoint(x: width * 0.35, y: height * 0.360))
+                    path.move(to: CGPoint(x: width * 0.815, y: height * 0.300))
+                    path.addQuadCurve(to: CGPoint(x: width * 0.50, y: height * 0.300), control: CGPoint(x: width * 0.65, y: height * 0.360))
+                }.stroke(seam, lineWidth: 1)
 
+                // The angled centre panel leading down to the logo.
                 Path { path in
-                    path.move(to: CGPoint(x: width * 0.115, y: height * 0.245))
-                    path.addQuadCurve(to: CGPoint(x: width * 0.5, y: height * 0.215), control: CGPoint(x: width * 0.30, y: height * 0.30))
-                    path.move(to: CGPoint(x: width * 0.885, y: height * 0.245))
-                    path.addQuadCurve(to: CGPoint(x: width * 0.5, y: height * 0.215), control: CGPoint(x: width * 0.70, y: height * 0.30))
-                }.stroke(Color.white.opacity(0.18), lineWidth: 1)
+                    path.move(to: CGPoint(x: width * 0.335, y: height * 0.395))
+                    path.addLine(to: CGPoint(x: width * 0.665, y: height * 0.395))
+                    path.addLine(to: CGPoint(x: width * 0.610, y: height * 0.780))
+                    path.addLine(to: CGPoint(x: width * 0.390, y: height * 0.780))
+                    path.closeSubpath()
+                }.stroke(Color.white.opacity(0.13), lineWidth: 1)
 
-                // Scroll wheel with the signature accent glow.
-                RoundedRectangle(cornerRadius: 7).fill(Color.black.opacity(0.55)).overlay(RoundedRectangle(cornerRadius: 7).stroke(accent.opacity(0.85), lineWidth: 1.4)).frame(width: width * 0.15, height: height * 0.155).position(x: width * 0.5, y: height * 0.145)
+                scrollWheel(width: width, height: height)
 
-                ForEach(0..<4, id: \.self) { index in RoundedRectangle(cornerRadius: 1).fill(accent.opacity(0.45)).frame(width: width * 0.09, height: 1.2).position(x: width * 0.5, y: height * (0.105 + (Double(index) * 0.026))) }
+                // Wheel tilt arrows painted either side of the housing.
+                Text("<").font(.system(size: 8, weight: .black)).foregroundStyle(Color.white.opacity(0.55)).position(x: width * 0.415, y: height * 0.222)
+                Text(">").font(.system(size: 8, weight: .black)).foregroundStyle(Color.white.opacity(0.55)).position(x: width * 0.585, y: height * 0.222)
 
-                // Back / forward thumb buttons, sitting below the sensitivity clutch paddle.
-                ForEach([0.585, 0.672], id: \.self) { thumbY in Capsule().fill(Color.white.opacity(0.16)).overlay(Capsule().stroke(Color.white.opacity(0.30), lineWidth: 1)).frame(width: width * 0.09, height: height * 0.072).position(x: width * 0.128, y: height * thumbY) }
+                // Two controls behind the wheel: scroll-mode toggle (left) and DPI cycle (right).
+                RoundedRectangle(cornerRadius: 3).fill(controlFill).overlay(RoundedRectangle(cornerRadius: 3).stroke(controlStroke, lineWidth: 1)).frame(width: width * 0.095, height: height * 0.026).position(x: width * 0.445, y: height * 0.338)
 
-                Capsule().fill(Color.white.opacity(0.13)).overlay(Capsule().stroke(Color.white.opacity(0.26), lineWidth: 1)).frame(width: width * 0.08, height: height * 0.066).position(x: width * 0.170, y: height * 0.470)
+                RoundedRectangle(cornerRadius: 3).fill(controlFill).overlay(RoundedRectangle(cornerRadius: 3).stroke(controlStroke, lineWidth: 1)).frame(width: width * 0.078, height: height * 0.026).position(x: width * 0.555, y: height * 0.338)
 
-                // The two controls behind the wheel: scroll-mode toggle on the left, DPI cycle on the right.
-                RoundedRectangle(cornerRadius: 3).fill(Color.white.opacity(0.16)).overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.white.opacity(0.30), lineWidth: 1)).frame(width: width * 0.105, height: height * 0.024).position(x: width * 0.435, y: height * 0.290)
+                // Multi-function trigger protruding from the front left flank.
+                Capsule().fill(controlFill).overlay(Capsule().stroke(controlStroke, lineWidth: 1)).frame(width: width * 0.150, height: height * 0.052).rotationEffect(.degrees(-8)).position(x: width * 0.128, y: height * 0.268)
 
-                RoundedRectangle(cornerRadius: 3).fill(Color.white.opacity(0.16)).overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.white.opacity(0.30), lineWidth: 1)).frame(width: width * 0.105, height: height * 0.024).position(x: width * 0.565, y: height * 0.290)
+                // Clutch paddle, then the two thumb buttons further back.
+                Capsule().fill(Color.white.opacity(0.13)).overlay(Capsule().stroke(Color.white.opacity(0.28), lineWidth: 1)).frame(width: width * 0.085, height: height * 0.058).position(x: width * 0.150, y: height * 0.420)
+
+                ForEach([0.512, 0.596], id: \.self) { thumbY in Capsule().fill(controlFill).overlay(Capsule().stroke(controlStroke, lineWidth: 1)).frame(width: width * 0.085, height: height * 0.056).position(x: width * 0.142, y: height * thumbY) }
 
                 // Underside profile button.
-                Capsule().fill(Color.white.opacity(0.10)).overlay(Capsule().stroke(Color.white.opacity(0.20), lineWidth: 1)).frame(width: width * 0.10, height: height * 0.020).position(x: width * 0.5, y: height * 0.860)
+                Capsule().fill(Color.white.opacity(0.10)).overlay(Capsule().stroke(Color.white.opacity(0.20), lineWidth: 1)).frame(width: width * 0.100, height: height * 0.020).position(x: width * 0.5, y: height * 0.880)
+
+                triSnakeMark(width: width, height: height)
             }
         }
     }
+
+    /// Tall ribbed wheel with the signature accent glow and highlight ribs.
+    private func scrollWheel(width: CGFloat, height: CGFloat) -> some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 6).fill(Color.black.opacity(0.60)).overlay(RoundedRectangle(cornerRadius: 6).stroke(accent.opacity(0.90), lineWidth: 1.5)).frame(width: width * 0.115, height: height * 0.185)
+
+            ForEach(0..<5, id: \.self) { index in RoundedRectangle(cornerRadius: 1).fill(accent.opacity(0.55)).frame(width: width * 0.070, height: 1.2).position(x: width * 0.5, y: height * (0.105 + (Double(index) * 0.032))) }
+        }
+    }
+
+    /// Hexagonal rubber grip flank, suggested with a rounded panel and a short hatch run.
+    private func hexGripPanel(width: CGFloat, height: CGFloat, mirrored: Bool) -> some View {
+        let centreX = mirrored ? width * 0.870 : width * 0.130
+        let rotation: Double = mirrored ? 10 : -10
+        return ZStack {
+            RoundedRectangle(cornerRadius: 14).fill(Color.black.opacity(0.24)).overlay(RoundedRectangle(cornerRadius: 14).stroke(Color.white.opacity(0.16), lineWidth: 1)).frame(width: width * 0.215, height: height * 0.300)
+
+            ForEach(0..<7, id: \.self) { index in Capsule().fill(Color.white.opacity(0.10)).frame(width: width * 0.150, height: 1).position(x: width * 0.5, y: height * (0.355 + (Double(index) * 0.036))) }
+        }.frame(width: width * 0.215, height: height * 0.300).rotationEffect(.degrees(rotation)).position(x: centreX, y: height * 0.475)
+    }
+
+    /// Three stylized stroke fan standing in for the moulded logo on the palm rest.
+    private func triSnakeMark(width: CGFloat, height: CGFloat) -> some View {
+        Path { path in
+            path.move(to: CGPoint(x: width * 0.500, y: height * 0.805))
+            path.addQuadCurve(to: CGPoint(x: width * 0.360, y: height * 0.878), control: CGPoint(x: width * 0.385, y: height * 0.812))
+            path.move(to: CGPoint(x: width * 0.500, y: height * 0.805))
+            path.addQuadCurve(to: CGPoint(x: width * 0.500, y: height * 0.888), control: CGPoint(x: width * 0.472, y: height * 0.848))
+            path.move(to: CGPoint(x: width * 0.500, y: height * 0.805))
+            path.addQuadCurve(to: CGPoint(x: width * 0.640, y: height * 0.878), control: CGPoint(x: width * 0.615, y: height * 0.812))
+        }.stroke(accent.opacity(0.75), style: StrokeStyle(lineWidth: 1.4, lineCap: .round))
+    }
 }
 
-/// Top-down mouse silhouette: wide rounded shoulders tapering into a rounded heel.
+/// Top-down Basilisk V3 silhouette: chunky shoulders, bulging grip flanks, rounded heel.
 private struct MouseChassisShape: Shape {
     func path(in rect: CGRect) -> Path {
         let width = rect.width
         let height = rect.height
         var path = Path()
-        path.move(to: CGPoint(x: width * 0.50, y: height))
-        path.addCurve(to: CGPoint(x: width * 0.99, y: height * 0.40), control1: CGPoint(x: width * 0.88, y: height * 0.99), control2: CGPoint(x: width * 0.99, y: height * 0.70))
-        path.addCurve(to: CGPoint(x: width * 0.52, y: 0), control1: CGPoint(x: width * 0.99, y: height * 0.12), control2: CGPoint(x: width * 0.78, y: 0))
-        path.addCurve(to: CGPoint(x: width * 0.015, y: height * 0.40), control1: CGPoint(x: width * 0.26, y: 0), control2: CGPoint(x: width * 0.015, y: height * 0.12))
-        // Right-handed ergonomics: the left flank bulges into a thumb rest before tapering to the heel.
-        path.addCurve(to: CGPoint(x: width * 0.055, y: height * 0.72), control1: CGPoint(x: width * -0.035, y: height * 0.54), control2: CGPoint(x: width * -0.015, y: height * 0.68))
-        path.addCurve(to: CGPoint(x: width * 0.50, y: height), control1: CGPoint(x: width * 0.19, y: height * 0.92), control2: CGPoint(x: width * 0.30, y: height))
+        path.move(to: CGPoint(x: width * 0.50, y: height * 1.00))
+        path.addCurve(to: CGPoint(x: width * 0.940, y: height * 0.440), control1: CGPoint(x: width * 0.870, y: height * 0.992), control2: CGPoint(x: width * 0.940, y: height * 0.720))
+        path.addCurve(to: CGPoint(x: width * 0.905, y: height * 0.170), control1: CGPoint(x: width * 0.940, y: height * 0.300), control2: CGPoint(x: width * 0.940, y: height * 0.225))
+        path.addCurve(to: CGPoint(x: width * 0.565, y: height * 0.020), control1: CGPoint(x: width * 0.865, y: height * 0.095), control2: CGPoint(x: width * 0.715, y: height * 0.020))
+        path.addCurve(to: CGPoint(x: width * 0.435, y: height * 0.020), control1: CGPoint(x: width * 0.530, y: height * 0.020), control2: CGPoint(x: width * 0.470, y: height * 0.020))
+        path.addCurve(to: CGPoint(x: width * 0.095, y: height * 0.170), control1: CGPoint(x: width * 0.285, y: height * 0.020), control2: CGPoint(x: width * 0.135, y: height * 0.095))
+        path.addCurve(to: CGPoint(x: width * 0.060, y: height * 0.440), control1: CGPoint(x: width * 0.060, y: height * 0.225), control2: CGPoint(x: width * 0.060, y: height * 0.300))
+        path.addCurve(to: CGPoint(x: width * 0.50, y: height * 1.00), control1: CGPoint(x: width * 0.130, y: height * 0.720), control2: CGPoint(x: width * 0.245, y: height * 0.992))
         path.closeSubpath()
         return path
     }

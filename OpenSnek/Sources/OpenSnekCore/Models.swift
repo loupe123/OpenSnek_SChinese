@@ -570,6 +570,7 @@ public enum ButtonBindingKind: String, CaseIterable, Identifiable, Codable, Send
     case `default`
     case dpiCycle = "dpi_cycle"
     case dpiClutch = "dpi_clutch"
+    case hypershiftTrigger = "hypershift_trigger"
     case leftClick = "left_click"
     case rightClick = "right_click"
     case middleClick = "middle_click"
@@ -614,6 +615,7 @@ public enum ButtonBindingKind: String, CaseIterable, Identifiable, Codable, Send
         case .mediaVolumeUp: return localized("Volume Up")
         case .mediaVolumeDown: return localized("Volume Down")
         case .clearLayer: return localized("Disabled")
+        case .hypershiftTrigger: return localized("HyperShift Trigger")
         }
     }
 
@@ -624,7 +626,7 @@ public enum ButtonBindingKind: String, CaseIterable, Identifiable, Codable, Send
         case .keyboardSimple: return .keyboard
         case .mediaPlayPause, .mediaNextTrack, .mediaPreviousTrack, .mediaStop, .mediaMute, .mediaVolumeUp, .mediaVolumeDown: return .media
         case .dpiCycle, .dpiClutch: return .dpi
-        case .default, .clearLayer: return .other
+        case .default, .clearLayer, .hypershiftTrigger: return .other
         }
     }
 
@@ -639,7 +641,7 @@ public enum ButtonBindingKind: String, CaseIterable, Identifiable, Codable, Send
     public var supportsTurbo: Bool {
         switch self {
         case .leftClick, .rightClick, .middleClick, .scrollUp, .scrollDown, .scrollLeft, .scrollRight, .mouseBack, .mouseForward, .keyboardSimple: return true
-        case .default, .dpiCycle, .dpiClutch, .clearLayer: return false
+        case .default, .dpiCycle, .dpiClutch, .clearLayer, .hypershiftTrigger: return false
         case .mediaPlayPause, .mediaNextTrack, .mediaPreviousTrack, .mediaStop, .mediaMute, .mediaVolumeUp, .mediaVolumeDown: return false
         }
     }

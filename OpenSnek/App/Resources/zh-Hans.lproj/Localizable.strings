@@ -248,6 +248,7 @@
 "Selected button" = "已选按键";
 
 /* ===== 动作分类（仿雷云） ===== */
+"HyperShift Trigger" = "HyperShift 触发键";
 "Mouse Buttons" = "鼠标按键";
 "Keyboard" = "键盘按键";
 "Media" = "多媒体键";
